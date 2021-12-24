@@ -18,5 +18,9 @@
         android:id="@+id/rankingListFragment"
         android:name="com.example.ponggame.RankingListFragment"
         android:label="fragment_ranking_list"
-        tools:layout="@layout/fragment_ranking_list" />
+        tools:layout="@layout/fragment_ranking_list" >
+        <action
+            android:id="@+id/action_rankingListFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
+    </fragment>
 </navigation>

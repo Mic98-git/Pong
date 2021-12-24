@@ -1,10 +1,11 @@
 package com.example.ponggame
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.ActionBar
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ponggame.databinding.FragmentRankingListBinding
 
@@ -14,6 +15,11 @@ class RankingListFragment : Fragment() {
     private var _binding: FragmentRankingListBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,5 +39,11 @@ class RankingListFragment : Fragment() {
         _binding = null
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // handle the up button here
+        return NavigationUI.onNavDestinationSelected(item!!,
+            view!!.findNavController())
+                || super.onOptionsItemSelected(item)
+    }
 
 }
