@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,7 @@ class RankingListFragment : Fragment() {
     ): View? {
         _binding = FragmentRankingListBinding.inflate(inflater, container, false)
         val view = binding.root
+        setActivityTitle("Ranking List")
         return view
     }
 
@@ -44,6 +46,11 @@ class RankingListFragment : Fragment() {
         return NavigationUI.onNavDestinationSelected(item!!,
             view!!.findNavController())
                 || super.onOptionsItemSelected(item)
+    }
+
+    fun Fragment.setActivityTitle(title: String)
+    {
+        (activity as AppCompatActivity?)!!.supportActionBar?.title = title
     }
 
 }
