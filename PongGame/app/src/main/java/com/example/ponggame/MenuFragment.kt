@@ -7,11 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.example.ponggame.databinding.FragmentMenuBinding
 
 
@@ -34,7 +32,7 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.constraintLayout
 
-        val button = view.findViewById<Button>(R.id.ranking_list)
+        val button = view.findViewById<Button>(R.id.ranking_list_button)
         button.setOnClickListener{
             view.findNavController().navigate(
                 MenuFragmentDirections.actionMenuFragmentToRankingListFragment())

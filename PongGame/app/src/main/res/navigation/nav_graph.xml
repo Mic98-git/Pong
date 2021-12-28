@@ -13,6 +13,12 @@
         <action
             android:id="@+id/action_menuFragment_to_rankingListFragment"
             app:destination="@id/rankingListFragment" />
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="password"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/rankingListFragment"
@@ -26,5 +32,9 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.ponggame.LoginFragment"
-        android:label="LoginFragment" />
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
+    </fragment>
 </navigation>

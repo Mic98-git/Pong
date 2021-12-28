@@ -10,7 +10,7 @@
     tools:context=".MenuFragment">
 
     <Button
-        android:id="@+id/new_game"
+        android:id="@+id/new_game_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="60dp"
@@ -18,10 +18,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ranking_list" />
+        app:layout_constraintBottom_toTopOf="@id/ranking_list_button" />
 
     <Button
-        android:id="@+id/ranking_list"
+        android:id="@+id/ranking_list_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ranking List"
@@ -31,13 +31,13 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
-        android:id="@+id/settings"
+        android:id="@+id/settings_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:text="Settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ranking_list" />
+        app:layout_constraintTop_toBottomOf="@id/ranking_list_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
