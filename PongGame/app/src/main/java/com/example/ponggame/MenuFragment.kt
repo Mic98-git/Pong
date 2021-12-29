@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.ponggame.databinding.FragmentMenuBinding
 
 
@@ -17,6 +19,7 @@ class MenuFragment : Fragment() {
     private var _binding: FragmentMenuBinding? = null
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
+    private val args: MenuFragmentArgs by navArgs()
 
 
     override fun onCreateView(
@@ -31,6 +34,8 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.constraintLayout
+        // passing username parameter
+        view.findViewById<TextView>(R.id.username_text_view).text = args.username
 
         val button = view.findViewById<Button>(R.id.ranking_list_button)
         button.setOnClickListener{
