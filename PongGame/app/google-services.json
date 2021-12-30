@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "502933370178",
+    "firebase_url": "https://pong-d43e2-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "pong-d43e2",
+    "storage_bucket": "pong-d43e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502933370178:android:42b49fa8d343fcc68d04db",
+        "android_client_info": {
+          "package_name": "com.example.ponggame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502933370178-rhnf5ms09rn1icf3j0kfp82sj6qv8t5q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAzsJBpaq6wDsnXZSIKbzpkm8dZppUl5I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502933370178-rhnf5ms09rn1icf3j0kfp82sj6qv8t5q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

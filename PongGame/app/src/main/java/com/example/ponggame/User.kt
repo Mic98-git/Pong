@@ -1,8 +1,3 @@
 package com.example.ponggame
 
-class User(
-    val username: String,
-    val password: String,
-    val score: Long) {
-    // TODO
-}
+data class User( val username: String, val password: String, val email: String, val score: Long)
