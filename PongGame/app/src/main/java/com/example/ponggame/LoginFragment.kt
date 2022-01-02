@@ -1,6 +1,7 @@
 package com.example.ponggame
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,8 +13,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.example.ponggame.databinding.FragmentLoginBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class LoginFragment : Fragment() {
 
@@ -24,7 +25,7 @@ class LoginFragment : Fragment() {
     private lateinit var insertedUsername: String
     private lateinit var insertedPassword: String
 
-    fun getUserData(){
+    private fun getUserData(){
         insertedUsername = constraintLayout
             .findViewById<EditText>(
                 R.id.username_login_edit_text
@@ -34,8 +35,6 @@ class LoginFragment : Fragment() {
                 R.id.password_login_edit_text
             ).text.toString()
     }
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +52,48 @@ class LoginFragment : Fragment() {
         val button = view.findViewById<Button>(R.id.login_button)
         button.setOnClickListener {
             getUserData()
+            when {
+                TextUtils.isEmpty(insertedUsername) -> {
+                    Toast.makeText(
+                        context,
+                        "Please enter email",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                TextUtils.isEmpty(insertedPassword) -> {
+                    Toast.makeText(
+                        context,
+                        "Please enter password",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else -> {
+                    FirebaseAuth.getInstance().signInWithEmailAndPassword(insertedUsername, insertedPassword).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(
+                                context,
+                                "You are logged in successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            view.findNavController().navigate(
+                                LoginFragmentDirections
+                                    .actionLoginFragmentToMenuFragment(
+                                        username = insertedUsername,
+                                        password = insertedPassword
+                                    )
+                            )
+                        }
+                        else{
+                            Toast.makeText(
+                                context,
+                                "Wrong password!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+            /*
             if(insertedPassword.equals("palle")) {
                 view.findNavController().navigate(
                     LoginFragmentDirections
@@ -66,7 +107,7 @@ class LoginFragment : Fragment() {
                 Toast.makeText(
                     context,"Wrong password!",Toast.LENGTH_SHORT
                 ).show()
-            }
+            }*/
         }
     }
 
@@ -79,3 +120,33 @@ class LoginFragment : Fragment() {
         (activity as AppCompatActivity?)!!.supportActionBar?.title = title
     }
 }
+
+/* REGISTRATION
+when {
+                TextUtils.isEmpty(insertedUsername) -> {
+                    Toast.makeText(
+                        context,
+                        "Please enter email",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                TextUtils.isEmpty(insertedPassword) -> {
+                    Toast.makeText(
+                        context,
+                        "Please enter password",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else -> {
+                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(insertedUsername, insertedPassword).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(
+                                context,
+                                "You are registered successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+ */
