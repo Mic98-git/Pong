@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.example.ponggame.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
@@ -48,10 +47,10 @@ class LoginFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        constraintLayout = binding.constraintLayout
+        constraintLayout = binding.loginConstraintLayout
 
-        val button = view.findViewById<Button>(R.id.login_button)
-        button.setOnClickListener {
+        val loginButton = view.findViewById<Button>(R.id.login_button)
+        loginButton.setOnClickListener {
             getUserData()
             if(insertedPassword.equals("palle")) {
                 view.findNavController().navigate(
@@ -67,6 +66,14 @@ class LoginFragment : Fragment() {
                     context,"Wrong password!",Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+
+        val registerButton = view.findViewById<Button>(R.id.signup_button)
+        registerButton.setOnClickListener {
+            view.findNavController().navigate(
+                LoginFragmentDirections
+                    .actionLoginFragmentToRegisterFragment()
+            )
         }
     }
 

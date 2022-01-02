@@ -19,7 +19,7 @@ class MenuFragment : Fragment() {
     private var _binding: FragmentMenuBinding? = null
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
-    private val args: MenuFragmentArgs by navArgs()
+    private val args: MenuFragmentArgs by this.navArgs()
 
 
     override fun onCreateView(
@@ -33,7 +33,7 @@ class MenuFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        constraintLayout = binding.constraintLayout
+        constraintLayout = binding.menuConstraintLayout
         // passing username parameter
         view.findViewById<TextView>(R.id.username_text_view).text = args.username
 

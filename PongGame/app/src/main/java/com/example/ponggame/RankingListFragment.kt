@@ -33,7 +33,7 @@ class RankingListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerView = binding.recyclerView
+        recyclerView = binding.rankingRecyclerView
     }
 
     override fun onDestroyView() {

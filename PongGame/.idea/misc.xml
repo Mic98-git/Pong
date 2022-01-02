@@ -5,10 +5,13 @@
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.225" />
         <entry key="app/src/main/res/drawable/back_button.xml" value="0.21203703703703702" />
+        <entry key="app/src/main/res/drawable/ic_add_24.xml" value="0.23072916666666668" />
+        <entry key="app/src/main/res/drawable/ic_user_100.xml" value="0.23072916666666668" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35260416666666666" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_menu.xml" value="0.25885416666666666" />
         <entry key="app/src/main/res/layout/fragment_ranking_list.xml" value="0.2390625" />
+        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.2636061170732419" />
         <entry key="app/src/main/res/layout/item_view.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/menu/menu.xml" value="0.24427083333333333" />
       </map>
