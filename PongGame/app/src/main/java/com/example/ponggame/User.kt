@@ -1,8 +1,6 @@
 package com.example.ponggame
 
-class User(
-    val username: String,
-    val password: String,
-    val score: Long) {
-    // TODO
-}
+import com.google.firebase.database.IgnoreExtraProperties
+
+@IgnoreExtraProperties
+data class User( val username: String? = null, val password: String? = null, val email: String? = null, val score: Long? = null)
