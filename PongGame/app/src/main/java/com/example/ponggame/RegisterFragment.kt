@@ -83,7 +83,7 @@ class RegisterFragment : Fragment() {
                     registerUser()
                     view.findNavController().navigate(
                         RegisterFragmentDirections
-                            .actionRegisterFragmentToMenuFragment()
+                            .actionRegisterFragmentToLoginFragment()
                     )
                 }
             } else {
@@ -94,7 +94,6 @@ class RegisterFragment : Fragment() {
                 ).show()
             }
         }
-
     }
 
     private fun registerUser() {

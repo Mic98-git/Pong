@@ -37,9 +37,22 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.menuConstraintLayout
 
-        view.findViewById<TextView>(R.id.username_text_view).text =
-            FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser?.uid.toString())
-                .toString()
+        val userid = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+        if (userid.isNotEmpty()) {
+            databaseReference.child(userid).addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    view.findViewById<TextView>(R.id.username_text_view).text = snapshot.child("username").value.toString()
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(
+                        context,
+                        "Error retrieving your data",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        }
 
         val rankButton = view.findViewById<Button>(R.id.ranking_list_button)
         rankButton.setOnClickListener {
@@ -64,25 +77,6 @@ class MenuFragment : Fragment() {
             ).show()
         }
     }
-
-    /*private fun retrieveUserData() {
-        val userid = FirebaseAuth.getInstance().currentUser?.uid.toString()
-        val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-        if (userid.isNotEmpty()) {
-            databaseReference.child(userid).addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    user = snapshot.getValue(User::class.java)!!
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        context,
-                        "Error retrieving your data",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-        }
-    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()
