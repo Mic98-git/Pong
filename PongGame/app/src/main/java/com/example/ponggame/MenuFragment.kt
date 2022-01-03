@@ -15,14 +15,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.ponggame.databinding.FragmentMenuBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
 
 class MenuFragment : Fragment() {
     private var _binding: FragmentMenuBinding? = null
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
-    private val args: MenuFragmentArgs by this.navArgs()
-
+    //private lateinit var user: User
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,26 +35,24 @@ class MenuFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-<<<<<<< HEAD
         constraintLayout = binding.menuConstraintLayout
-=======
-        constraintLayout = binding.constraintLayout
-        val user = FirebaseAuth.getInstance().currentUser
->>>>>>> 4ed345fc78a9a4db4898b07fd28fc7e514e1a8aa
-        // passing username parameter
-        view.findViewById<TextView>(R.id.username_text_view).text = user?.email
+
+        view.findViewById<TextView>(R.id.username_text_view).text =
+            FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser?.uid.toString())
+                .toString()
 
         val rankButton = view.findViewById<Button>(R.id.ranking_list_button)
-        rankButton.setOnClickListener{
+        rankButton.setOnClickListener {
             /*request to list all the users with their scores
 
             */
             view.findNavController().navigate(
-                MenuFragmentDirections.actionMenuFragmentToRankingListFragment())
+                MenuFragmentDirections.actionMenuFragmentToRankingListFragment()
+            )
         }
 
         val logOutButton = view.findViewById<Button>(R.id.log_out_button)
-        logOutButton.setOnClickListener{
+        logOutButton.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             // view.findNavController().navigate(
             // //go to the welcome page
@@ -66,6 +64,25 @@ class MenuFragment : Fragment() {
             ).show()
         }
     }
+
+    /*private fun retrieveUserData() {
+        val userid = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+        if (userid.isNotEmpty()) {
+            databaseReference.child(userid).addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    user = snapshot.getValue(User::class.java)!!
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(
+                        context,
+                        "Error retrieving your data",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        }
+    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()
