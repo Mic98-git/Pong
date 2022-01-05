@@ -1,22 +1,26 @@
 package com.example.ponggame
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import com.example.ponggame.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import de.hdodenhof.circleimageview.CircleImageView
 
 class RegisterFragment : Fragment() {
 
@@ -28,6 +32,21 @@ class RegisterFragment : Fragment() {
     private lateinit var insertedUsername: String
     private lateinit var insertedPassword: String
     private lateinit var confirmedPassword: String
+    private lateinit var profileImage: CircleImageView
+    private lateinit var profileUri: Uri
+    private var imageSelected: Boolean = false
+
+    private val selectImageFromGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val res: Intent? = result.data
+            if (res != null) run {
+                profileUri = res.data!!
+                profileImage = binding.root.findViewById(R.id.profile_image_icon_register)
+                profileImage.setImageURI(profileUri)
+                imageSelected = true
+            }
+        }
+    }
 
     private fun getUserData() {
         insertedEmail = constraintLayout
@@ -55,30 +74,40 @@ class RegisterFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         setActivityTitle("Register")
+
+        val selectImageButton = binding.root.findViewById<ImageButton>(R.id.add_profile_image_button)
+        selectImageButton.setOnClickListener {
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            selectImageFromGallery.launch(intent)
+        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.registerConstraintLayout
+
         val registerButton = view.findViewById<Button>(R.id.register_button)
         registerButton.setOnClickListener {
             getUserData()
-            if (insertedPassword.length < 6) {
-                Toast.makeText(
-                    context,
-                    "Min password should be 6 characters",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else if (insertedEmail.isNotEmpty() && insertedUsername.isNotEmpty() && insertedPassword.isNotEmpty() && checkPassword(insertedPassword, confirmedPassword)) {
+            if (insertedEmail.isNotEmpty() && insertedUsername.isNotEmpty() && insertedPassword.isNotEmpty() && checkPassword(insertedPassword, confirmedPassword)) {
                 if (!Patterns.EMAIL_ADDRESS.matcher(insertedEmail).matches())
                     Toast.makeText(
                         context,
                         "Please provide a valid email",
                         Toast.LENGTH_SHORT
                     ).show()
+                if (insertedPassword.length < 6) {
+                    Toast.makeText(
+                        context,
+                        "Min password should be 6 characters",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 else {
                     registerUser()
                     view.findNavController().navigate(
@@ -98,12 +127,13 @@ class RegisterFragment : Fragment() {
 
     private fun registerUser() {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(insertedEmail, insertedPassword)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = User(insertedUsername, insertedPassword, insertedEmail, 0)
+            .addOnCompleteListener { createUser ->
+                if (createUser.isSuccessful) {
+                    val user = User(insertedUsername, FirebaseAuth.getInstance().currentUser?.uid.toString(), insertedEmail, 0)
                         FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser?.uid.toString())
-                            .setValue(user).addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
+                            .setValue(user).addOnCompleteListener { registerUser ->
+                            if (registerUser.isSuccessful) {
+                                uploadImageToFirebase()
                                 Toast.makeText(
                                     context,
                                     "You are registered successfully",
@@ -127,6 +157,15 @@ class RegisterFragment : Fragment() {
                 }
             }
         return
+    }
+
+    private fun uploadImageToFirebase() {
+        if (imageSelected) {
+            val storageReference: StorageReference =
+                FirebaseStorage.getInstance().reference.child("profile_pictures")
+                    .child(FirebaseAuth.getInstance().currentUser?.uid.toString())
+            storageReference.putFile(profileUri)
+        }
     }
 
     private fun Fragment.setActivityTitle(title: String) {

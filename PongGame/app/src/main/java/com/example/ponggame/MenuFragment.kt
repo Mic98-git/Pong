@@ -1,5 +1,6 @@
 package com.example.ponggame
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,13 +17,17 @@ import androidx.navigation.fragment.navArgs
 import com.example.ponggame.databinding.FragmentMenuBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import de.hdodenhof.circleimageview.CircleImageView
+import java.io.File
 
 
 class MenuFragment : Fragment() {
     private var _binding: FragmentMenuBinding? = null
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
-    //private lateinit var user: User
+    private lateinit var storageReference: StorageReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +41,13 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.menuConstraintLayout
+
+        storageReference = FirebaseStorage.getInstance().reference.child("profile_pictures").child(FirebaseAuth.getInstance().currentUser?.uid.toString())
+        val localFile = File.createTempFile("tempImage", "")
+        storageReference.getFile(localFile).addOnSuccessListener {
+            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+            binding.userImage.setImageBitmap(bitmap)
+        }
 
         val userid = FirebaseAuth.getInstance().currentUser?.uid.toString()
         val databaseReference = FirebaseDatabase.getInstance().getReference("Users")

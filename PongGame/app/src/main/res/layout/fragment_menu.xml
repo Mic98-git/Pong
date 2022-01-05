@@ -24,19 +24,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
-            <com.mikhaellopez.circularimageview.CircularImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_user_150"
                 android:layout_marginLeft="20dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/user_image"
-                app:civ_border_color="#f03c15"
-                app:civ_border_width="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
             <TextView
                 android:id="@+id/welcomeback_user"

@@ -18,17 +18,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.mikhaellopez.circularimageview.CircularImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image_icon_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_user_150"
             android:importantForAccessibility="no"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_user_150" />
+            />
 
         <ImageButton
             android:id="@+id/add_profile_image_button"
@@ -38,11 +39,12 @@
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.714"
+            app:layout_constraintHorizontal_bias="0.617"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.821"
-            app:srcCompat="@drawable/ic_add_circle_35" />
+            app:layout_constraintVertical_bias="0.705"
+            app:srcCompat="@drawable/ic_add_circle_35"
+            tools:ignore="SpeakableTextPresentCheck" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
