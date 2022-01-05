@@ -80,9 +80,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun loginUser() {
-        if (FirebaseAuth.getInstance().currentUser != null) {
-            FirebaseAuth.getInstance().signOut()
-        }
         FirebaseAuth.getInstance().signInWithEmailAndPassword(insertedEmail, insertedPassword)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
