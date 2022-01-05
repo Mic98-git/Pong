@@ -39,7 +39,7 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         Log.d("LoginFragment", "Login Fragment created!")
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         setActivityTitle("Login")
@@ -60,10 +60,6 @@ class LoginFragment : Fragment() {
                     ).show()
                 else {
                     loginUser()
-                    view.findNavController().navigate(
-                        LoginFragmentDirections
-                            .actionLoginFragmentToMenuFragment()
-                    )
                 }
             } else {
                 Toast.makeText(
@@ -84,9 +80,16 @@ class LoginFragment : Fragment() {
     }
 
     private fun loginUser() {
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            FirebaseAuth.getInstance().signOut()
+        }
         FirebaseAuth.getInstance().signInWithEmailAndPassword(insertedEmail, insertedPassword)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    binding.root.findNavController().navigate(
+                        LoginFragmentDirections
+                            .actionLoginFragmentToMenuFragment()
+                    )
                     Toast.makeText(
                         context,
                         "You are logged in successfully",
@@ -110,21 +113,5 @@ class LoginFragment : Fragment() {
     private fun Fragment.setActivityTitle(title: String) {
         (activity as AppCompatActivity?)!!.supportActionBar?.title = title
     }
-
-    /*
-            if(insertedPassword.equals("palle")) {
-                view.findNavController().navigate(
-                    LoginFragmentDirections
-                        .actionLoginFragmentToMenuFragment(
-                            username = insertedUsername,
-                            password = insertedPassword
-                        )
-                )
-            }
-            else{
-                Toast.makeText(
-                    context,"Wrong password!",Toast.LENGTH_SHORT
-                ).show()
-            }*/
 
 }

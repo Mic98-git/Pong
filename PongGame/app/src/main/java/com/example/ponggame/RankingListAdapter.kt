@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import de.hdodenhof.circleimageview.CircleImageView
@@ -39,6 +38,7 @@ class RankingListAdapter(private var users: ArrayList<User>) : RecyclerView.Adap
 
     fun addItem(user : User) {
         users.add(user)
+        users.sortByDescending { it.score }
         notifyDataSetChanged()
     }
 

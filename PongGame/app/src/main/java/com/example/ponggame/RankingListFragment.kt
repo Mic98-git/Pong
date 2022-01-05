@@ -16,7 +16,6 @@ class RankingListFragment : Fragment() {
     private var _binding: FragmentRankingListBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
-    private lateinit var databaseReference: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +25,7 @@ class RankingListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentRankingListBinding.inflate(inflater, container, false)
         val view = binding.root
         setActivityTitle("Ranking List")
@@ -41,8 +40,8 @@ class RankingListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.adapter = rankingListAdapter
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-        databaseReference.addValueEventListener(object : ValueEventListener {
+        FirebaseDatabase.getInstance().getReference("Users")
+            .addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (data: DataSnapshot in snapshot.children) {
                     data.getValue(User::class.java)?.let { rankingListAdapter.addItem(it) }
@@ -63,12 +62,12 @@ class RankingListFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // handle the up button here
-        return NavigationUI.onNavDestinationSelected(item!!,
+        return NavigationUI.onNavDestinationSelected(item,
             view!!.findNavController())
                 || super.onOptionsItemSelected(item)
     }
 
-    fun Fragment.setActivityTitle(title: String)
+    private fun Fragment.setActivityTitle(title: String)
     {
         (activity as AppCompatActivity?)!!.supportActionBar?.title = title
     }

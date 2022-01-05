@@ -110,10 +110,6 @@ class RegisterFragment : Fragment() {
                 }
                 else {
                     registerUser()
-                    view.findNavController().navigate(
-                        RegisterFragmentDirections
-                            .actionRegisterFragmentToLoginFragment()
-                    )
                 }
             } else {
                 Toast.makeText(
@@ -134,6 +130,10 @@ class RegisterFragment : Fragment() {
                             .setValue(user).addOnCompleteListener { registerUser ->
                             if (registerUser.isSuccessful) {
                                 uploadImageToFirebase()
+                                binding.root.findNavController().navigate(
+                                    RegisterFragmentDirections
+                                        .actionRegisterFragmentToLoginFragment()
+                                )
                                 Toast.makeText(
                                     context,
                                     "You are registered successfully",
