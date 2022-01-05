@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_menuFragment_to_rankingListFragment"
             app:destination="@id/rankingListFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/rankingListFragment"
@@ -41,6 +44,15 @@
         tools:layout="@layout/fragment_register" >
         <action
             android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.example.ponggame.UserProfileFragment"
+        android:label="fragment_userProfile"
+        tools:layout="@layout/fragment_user_profile" >
+        <action
+            android:id="@+id/action_userProfileFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
 </navigation>

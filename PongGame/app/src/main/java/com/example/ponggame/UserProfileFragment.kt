@@ -3,7 +3,6 @@ package com.example.ponggame
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,19 +11,22 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.navArgs
 import com.example.ponggame.databinding.FragmentMenuBinding
+import com.example.ponggame.databinding.FragmentUserProfileBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 
+class UserProfileFragment : Fragment() {
 
-class MenuFragment : Fragment() {
-    private var _binding: FragmentMenuBinding? = null
+    private var _binding: FragmentUserProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var storageReference: StorageReference
@@ -33,28 +35,29 @@ class MenuFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("MenuFragment", "Menu Fragment created!")
-        _binding = FragmentMenuBinding.inflate(inflater, container, false)
-        setActivityTitle("Menu")
+        Log.d("UserProfileFragment", "User profile fragment created!")
+        _binding = FragmentUserProfileBinding.inflate(inflater, container, false)
+        setActivityTitle("User Profile")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        constraintLayout = binding.menuConstraintLayout
+        constraintLayout = binding.constraintLayoutProfileImage
 
         storageReference = FirebaseStorage.getInstance().reference.child("profile_pictures").child(FirebaseAuth.getInstance().currentUser?.uid.toString())
         val localFile = File.createTempFile("tempImage", "")
         storageReference.getFile(localFile).addOnSuccessListener {
             val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-            binding.userImage.setImageBitmap(bitmap)
+            binding.profileImageIcon.setImageBitmap(bitmap)
         }
 
-        val userid = FirebaseAuth.getInstance().currentUser?.uid.toString()
         val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+        val userid = FirebaseAuth.getInstance().currentUser?.uid.toString()
         if (userid.isNotEmpty()) {
-            databaseReference.child(userid).addValueEventListener(object : ValueEventListener{
+            databaseReference.child(userid).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    view.findViewById<TextView>(R.id.username_text_view).text = snapshot.child("username").value.toString()
+                    view.findViewById<TextView>(R.id.user_email).text = snapshot.child("email").value.toString()
+                    view.findViewById<TextView>(R.id.user_username).text = snapshot.child("username").value.toString()
                 }
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(
@@ -66,17 +69,11 @@ class MenuFragment : Fragment() {
             })
         }
 
-        val rankButton = view.findViewById<Button>(R.id.ranking_list_button)
-        rankButton.setOnClickListener {
+        val signOutButton = view.findViewById<Button>(R.id.log_out_button)
+        signOutButton.setOnClickListener {
+            logOut()
             view.findNavController().navigate(
-                MenuFragmentDirections.actionMenuFragmentToRankingListFragment()
-            )
-        }
-
-        val myProfileButton = view.findViewById<Button>(R.id.profile_button)
-        myProfileButton.setOnClickListener {
-            view.findNavController().navigate(
-                MenuFragmentDirections.actionMenuFragmentToUserProfileFragment()
+                UserProfileFragmentDirections.actionUserProfileFragmentToLoginFragment()
             )
         }
     }
@@ -88,5 +85,14 @@ class MenuFragment : Fragment() {
 
     private fun Fragment.setActivityTitle(title: String) {
         (activity as AppCompatActivity?)!!.supportActionBar?.title = title
+    }
+
+    private fun logOut() {
+        FirebaseAuth.getInstance().signOut()
+        Toast.makeText(
+                context,
+                "You are successfully logged out",
+                Toast.LENGTH_SHORT
+            ).show()
     }
 }
