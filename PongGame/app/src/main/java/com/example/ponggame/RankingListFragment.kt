@@ -2,6 +2,7 @@ package com.example.ponggame
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -25,7 +26,7 @@ class RankingListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = FragmentRankingListBinding.inflate(inflater, container, false)
         val view = binding.root
         setActivityTitle("Ranking List")
@@ -40,16 +41,18 @@ class RankingListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.adapter = rankingListAdapter
 
-        FirebaseDatabase.getInstance().getReference("Users")
-            .addValueEventListener(object : ValueEventListener {
+        DatabaseImpl.getUsersReference().addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (data: DataSnapshot in snapshot.children) {
                     data.getValue(User::class.java)?.let { rankingListAdapter.addItem(it) }
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Toast.makeText(
+                    context,
+                    "Error retrieving ranking list",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
 

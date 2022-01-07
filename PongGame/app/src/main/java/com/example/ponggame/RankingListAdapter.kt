@@ -6,14 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 
 class RankingListAdapter(private var users: ArrayList<User>) : RecyclerView.Adapter<RankingListAdapter.ViewHolder>() {
-
-    private lateinit var storageReference: StorageReference
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_view, parent, false))
@@ -24,9 +20,8 @@ class RankingListAdapter(private var users: ArrayList<User>) : RecyclerView.Adap
         holder.username.text = user.username
         holder.score.text = user.score.toString()
         holder.position.text = (position+1).toString()
-        storageReference = FirebaseStorage.getInstance().reference.child("profile_pictures").child(user.uid.toString())
         val localFile = File.createTempFile("tempImage", "")
-        storageReference.getFile(localFile).addOnSuccessListener {
+        DatabaseImpl.getReferenceToUsersProfilePictures().child(user.uid.toString()).getFile(localFile).addOnSuccessListener {
             val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
             holder.image.setImageBitmap(bitmap)
         }

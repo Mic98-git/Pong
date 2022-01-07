@@ -16,10 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import com.example.ponggame.databinding.FragmentRegisterBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import de.hdodenhof.circleimageview.CircleImageView
 
 class RegisterFragment : Fragment() {
@@ -48,7 +44,7 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    private fun getUserData() {
+    private fun getTypedData() {
         insertedEmail = constraintLayout
             .findViewById<EditText>(
                 R.id.email_register_edit_text
@@ -74,7 +70,7 @@ class RegisterFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         setActivityTitle("Register")
 
@@ -93,7 +89,7 @@ class RegisterFragment : Fragment() {
 
         val registerButton = view.findViewById<Button>(R.id.register_button)
         registerButton.setOnClickListener {
-            getUserData()
+            getTypedData()
             if (insertedEmail.isNotEmpty() && insertedUsername.isNotEmpty() && insertedPassword.isNotEmpty() && checkPassword(insertedPassword, confirmedPassword)) {
                 if (!Patterns.EMAIL_ADDRESS.matcher(insertedEmail).matches())
                     Toast.makeText(
@@ -122,13 +118,12 @@ class RegisterFragment : Fragment() {
     }
 
     private fun registerUser() {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(insertedEmail, insertedPassword)
-            .addOnCompleteListener { createUser ->
-                if (createUser.isSuccessful) {
-                    val user = User(insertedUsername, FirebaseAuth.getInstance().currentUser?.uid.toString(), insertedEmail, 0)
-                        FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().currentUser?.uid.toString())
-                            .setValue(user).addOnCompleteListener { registerUser ->
-                            if (registerUser.isSuccessful) {
+        DatabaseImpl.registerUser(insertedEmail, insertedPassword)
+            .addOnCompleteListener { registration ->
+                if (registration.isSuccessful) {
+                    DatabaseImpl.createNewUser(insertedUsername, insertedEmail)
+                        .addOnCompleteListener { createUser ->
+                            if (createUser.isSuccessful) {
                                 uploadImageToFirebase()
                                 binding.root.findNavController().navigate(
                                     RegisterFragmentDirections
@@ -142,13 +137,12 @@ class RegisterFragment : Fragment() {
                             } else {
                                 Toast.makeText(
                                     context,
-                                    "Failed to register! Try again",
+                                    "Failed to create your profile! Try again",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
                         }
-                    }
-                else {
+                } else {
                     Toast.makeText(
                         context,
                         "Failed to register! Try again",
@@ -156,15 +150,11 @@ class RegisterFragment : Fragment() {
                     ).show()
                 }
             }
-        return
     }
 
     private fun uploadImageToFirebase() {
         if (imageSelected) {
-            val storageReference: StorageReference =
-                FirebaseStorage.getInstance().reference.child("profile_pictures")
-                    .child(FirebaseAuth.getInstance().currentUser?.uid.toString())
-            storageReference.putFile(profileUri)
+            DatabaseImpl.uploadProfilePicture(profileUri)
         }
     }
 

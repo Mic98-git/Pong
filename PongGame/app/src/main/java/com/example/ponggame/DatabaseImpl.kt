@@ -1,12 +1,17 @@
 package com.example.ponggame
 
 import android.net.Uri
+import android.util.Log
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.File
 
-class DatabaseImpl : Database {
+object DatabaseImpl : Database {
 
     override fun getAuthInstance(): FirebaseAuth {
         return FirebaseAuth.getInstance()
@@ -20,12 +25,16 @@ class DatabaseImpl : Database {
         return FirebaseDatabase.getInstance()
     }
 
-    override fun loginUser(email : String, password : String) {
-        getAuthInstance().signInWithEmailAndPassword(email, password)
+    override fun getReferenceToUsersProfilePictures(): StorageReference {
+        return getStorageInstance().reference.child("profile_pictures")
     }
 
-    override fun registerUser(email : String, password : String) {
-        getAuthInstance().createUserWithEmailAndPassword(email, password)
+    override fun loginUser(email : String, password : String): Task<AuthResult> {
+        return getAuthInstance().signInWithEmailAndPassword(email, password)
+    }
+
+    override fun registerUser(email : String, password : String): Task<AuthResult> {
+        return getAuthInstance().createUserWithEmailAndPassword(email, password)
     }
 
     override fun logOut() {
@@ -36,21 +45,61 @@ class DatabaseImpl : Database {
         return getAuthInstance().currentUser?.uid.toString()
     }
 
-    override fun getCurrentUserInfo() {
-        TODO("Not yet implemented")
+    override fun createNewUser(username: String, email: String): Task<Void> {
+        val user = User(username, getCurrentUserId(), email, 0)
+        return getUsersReference().child(getCurrentUserId()).setValue(user)
     }
 
-    override fun createNewUser(username: String, email: String): User {
-        return User(username, getCurrentUserId(), email, 0)
-    }
-
-    override fun getUsers(): DatabaseReference {
+    override fun getUsersReference(): DatabaseReference {
         return getDatabaseInstance().getReference("Users")
     }
 
-    override fun uploadUserImage(imageUri: Uri) {
-        val reference = getStorageInstance().reference.child("profile_pictures")
-            .child(getCurrentUserId())
-        reference.putFile(imageUri)
+    override fun getProfilePicture(localFile: File) : FileDownloadTask {
+        return getReferenceToUsersProfilePictures().child(getCurrentUserId()).getFile(localFile)
     }
+
+    override fun uploadProfilePicture(imageUri : Uri) {
+        getReferenceToUsersProfilePictures().child(getCurrentUserId()).putFile(imageUri)
+    }
+
+    override fun updateUserUsername(username : String) {
+        getUsersReference().child(getCurrentUserId()).child("username").setValue(username)
+    }
+
+    override fun updateUserScore(update: Int) {
+        var score = 0
+        getUsersReference().child(getCurrentUserId()).child("score").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                score = snapshot.child("score").value.toString().toInt()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("DatabaseImpl", "Error setting current user data")
+            }
+        })
+        getUsersReference().child(getCurrentUserId()).child("score").setValue(score.plus(update))
+    }
+
+    override fun updateProfilePicture(imageUri: Uri) {
+        getReferenceToUsersProfilePictures().child(getCurrentUserId()).delete().addOnCompleteListener{ deleteImage ->
+            if (deleteImage.isSuccessful) {
+                uploadProfilePicture(imageUri)
+            }
+        }
+    }
+
 }
+
+    /*override fun setCurrentLoggedUser() {
+        getUsersReference().child(getAuthInstance().currentUser?.uid.toString()).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val username = snapshot.child("username").value.toString()
+                val email = snapshot.child("email").value.toString()
+                val uid = snapshot.child("uid").value.toString()
+                val score = snapshot.child("score").value.toString().toInt()
+                currentUser = User(username, uid, email, score)
+                Log.d("DatabaseImpl", "Current logged user setted")
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("DatabaseImpl", "Error setting current user data")
+            }
+        })*/

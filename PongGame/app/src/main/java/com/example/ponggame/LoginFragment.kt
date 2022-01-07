@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import com.example.ponggame.databinding.FragmentLoginBinding
-import com.google.firebase.auth.FirebaseAuth
 
 class LoginFragment : Fragment() {
 
@@ -25,7 +24,7 @@ class LoginFragment : Fragment() {
     private lateinit var insertedEmail: String
     private lateinit var insertedPassword: String
 
-    private fun getUserData() {
+    private fun getTypedData() {
         insertedEmail = constraintLayout
             .findViewById<EditText>(
                 R.id.username_login_edit_text
@@ -39,7 +38,7 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         Log.d("LoginFragment", "Login Fragment created!")
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         setActivityTitle("Login")
@@ -50,7 +49,7 @@ class LoginFragment : Fragment() {
         constraintLayout = binding.loginConstraintLayout
         val loginButton = view.findViewById<Button>(R.id.login_button)
         loginButton.setOnClickListener {
-            getUserData()
+            getTypedData()
             if (insertedEmail.isNotEmpty() && insertedPassword.isNotEmpty()) {
                 if (!Patterns.EMAIL_ADDRESS.matcher(insertedEmail).matches())
                     Toast.makeText(
@@ -58,6 +57,13 @@ class LoginFragment : Fragment() {
                         "Please provide a valid email",
                         Toast.LENGTH_SHORT
                     ).show()
+                if (insertedPassword.length < 6) {
+                    Toast.makeText(
+                        context,
+                        "Please insert a valid password with more than 6 char",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 else {
                     loginUser()
                 }
@@ -80,26 +86,25 @@ class LoginFragment : Fragment() {
     }
 
     private fun loginUser() {
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(insertedEmail, insertedPassword)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    binding.root.findNavController().navigate(
-                        LoginFragmentDirections
-                            .actionLoginFragmentToMenuFragment()
-                    )
-                    Toast.makeText(
-                        context,
-                        "You are logged in successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        context,
-                        "Failed to login! Please check your credentials",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+        DatabaseImpl.loginUser(insertedEmail, insertedPassword).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                binding.root.findNavController().navigate(
+                    LoginFragmentDirections
+                        .actionLoginFragmentToMenuFragment()
+                )
+                Toast.makeText(
+                    context,
+                    "You are logged in successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    "Failed to login! Please check your credentials",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+        }
     }
 
     override fun onDestroyView() {

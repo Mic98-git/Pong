@@ -13,15 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.example.ponggame.databinding.FragmentMenuBinding
 import com.example.ponggame.databinding.FragmentUserProfileBinding
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import java.io.File
 
 class UserProfileFragment : Fragment() {
@@ -29,7 +24,6 @@ class UserProfileFragment : Fragment() {
     private var _binding: FragmentUserProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
-    private lateinit var storageReference: StorageReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,21 +37,14 @@ class UserProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.constraintLayoutProfileImage
+        setProfilePicture()
 
-        storageReference = FirebaseStorage.getInstance().reference.child("profile_pictures").child(FirebaseAuth.getInstance().currentUser?.uid.toString())
-        val localFile = File.createTempFile("tempImage", "")
-        storageReference.getFile(localFile).addOnSuccessListener {
-            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-            binding.profileImageIcon.setImageBitmap(bitmap)
-        }
-
-        val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-        val userid = FirebaseAuth.getInstance().currentUser?.uid.toString()
-        if (userid.isNotEmpty()) {
-            databaseReference.child(userid).addValueEventListener(object : ValueEventListener {
+        if (DatabaseImpl.getCurrentUserId().isNotEmpty()) {
+            DatabaseImpl.getUsersReference().child(DatabaseImpl.getCurrentUserId()).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     view.findViewById<TextView>(R.id.user_email).text = snapshot.child("email").value.toString()
                     view.findViewById<TextView>(R.id.user_username).text = snapshot.child("username").value.toString()
+                    view.findViewById<TextView>(R.id.user_score).text = snapshot.child("score").value.toString()
                 }
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(
@@ -88,11 +75,19 @@ class UserProfileFragment : Fragment() {
     }
 
     private fun logOut() {
-        FirebaseAuth.getInstance().signOut()
+        DatabaseImpl.logOut()
         Toast.makeText(
                 context,
                 "You are successfully logged out",
                 Toast.LENGTH_SHORT
             ).show()
+    }
+
+    private fun setProfilePicture() {
+        val localFile = File.createTempFile("tempImage", "")
+        DatabaseImpl.getProfilePicture(localFile).addOnSuccessListener {
+            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+            binding.profileImageIcon.setImageBitmap(bitmap)
+        }
     }
 }
