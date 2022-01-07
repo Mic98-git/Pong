@@ -145,7 +145,7 @@ class RegisterFragment : Fragment() {
                 } else {
                     Toast.makeText(
                         context,
-                        "Failed to register! Try again",
+                        "This email is already associated with an account! Log in or use another one",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

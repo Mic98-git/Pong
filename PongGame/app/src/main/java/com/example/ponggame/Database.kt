@@ -43,4 +43,6 @@ interface Database {
 
     fun updateUserUsername(username: String)
 
+    fun deleteUser()
+
 }

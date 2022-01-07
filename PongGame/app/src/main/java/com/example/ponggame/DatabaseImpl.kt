@@ -87,6 +87,11 @@ object DatabaseImpl : Database {
         }
     }
 
+    override fun deleteUser() {
+        getUsersReference().child(getCurrentUserId()).removeValue()
+        getReferenceToUsersProfilePictures().child(getCurrentUserId()).delete()
+    }
+
 }
 
     /*override fun setCurrentLoggedUser() {
