@@ -78,7 +78,8 @@ class RegisterFragment : Fragment() {
         selectImageButton.setOnClickListener {
             val intent = Intent()
             intent.type = "image/*"
-            intent.action = Intent.ACTION_GET_CONTENT
+            //intent.action = Intent.ACTION_GET_CONTENT
+            intent.action = Intent.ACTION_PICK //image from gallery
             selectImageFromGallery.launch(intent)
         }
         return binding.root
