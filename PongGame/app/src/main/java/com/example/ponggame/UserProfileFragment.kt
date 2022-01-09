@@ -56,6 +56,10 @@ class UserProfileFragment : Fragment() {
             })
         }
 
+        val updateProfileButton = view.findViewById<Button>(R.id.update_profile_button)
+        updateProfileButton.setOnClickListener {
+        }
+
         val signOutButton = view.findViewById<Button>(R.id.log_out_button)
         signOutButton.setOnClickListener {
             logOut()

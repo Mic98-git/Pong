@@ -67,16 +67,15 @@ object DatabaseImpl : Database {
     }
 
     override fun updateUserScore(update: Int) {
-        var score = 0
         getUsersReference().child(getCurrentUserId()).child("score").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                score = snapshot.child("score").value.toString().toInt()
+                val score = (snapshot.value as Long).toInt()
+                getUsersReference().child(getCurrentUserId()).child("score").setValue(score.plus(update))
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.d("DatabaseImpl", "Error setting current user data")
             }
         })
-        getUsersReference().child(getCurrentUserId()).child("score").setValue(score.plus(update))
     }
 
     override fun updateProfilePicture(imageUri: Uri) {
