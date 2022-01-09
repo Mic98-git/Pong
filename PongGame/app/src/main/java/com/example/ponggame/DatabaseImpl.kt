@@ -79,11 +79,19 @@ object DatabaseImpl : Database {
     }
 
     override fun updateProfilePicture(imageUri: Uri) {
-        getReferenceToUsersProfilePictures().child(getCurrentUserId()).delete().addOnCompleteListener{ deleteImage ->
-            if (deleteImage.isSuccessful) {
+        val profilePicture = getReferenceToUsersProfilePictures().child(getCurrentUserId())
+        profilePicture.metadata
+            .addOnSuccessListener {
+            profilePicture.delete().addOnCompleteListener { deleteImage ->
+                if (deleteImage.isSuccessful) {
+                    uploadProfilePicture(imageUri)
+                }
+            }
+            }
+            .addOnFailureListener {
+                Log.d("DatabaseImpl", "no profile images")
                 uploadProfilePicture(imageUri)
             }
-        }
     }
 
     override fun deleteUser() {
