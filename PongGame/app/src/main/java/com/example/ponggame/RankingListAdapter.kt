@@ -32,8 +32,10 @@ class RankingListAdapter(private var users: ArrayList<User>) : RecyclerView.Adap
     }
 
     fun addItem(user : User) {
-        users.add(user)
-        users.sortByDescending { it.score }
+        if (user.score!! > 0) {
+            users.add(user)
+            users.sortByDescending { it.score }
+        }
         notifyDataSetChanged()
     }
 
