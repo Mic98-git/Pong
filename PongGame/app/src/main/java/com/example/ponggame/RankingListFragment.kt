@@ -41,7 +41,7 @@ class RankingListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.adapter = rankingListAdapter
 
-        DatabaseImpl.getUsersReference().addValueEventListener(object : ValueEventListener {
+        DatabaseImpl.getUsersReference().addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (data: DataSnapshot in snapshot.children) {
                     data.getValue(User::class.java)?.let { rankingListAdapter.addItem(it) }
