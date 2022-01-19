@@ -10,8 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PongGame">
         <activity
+            android:name="com.example.ponggame.game.ui.PongActivity"
+            android:exported="false"
+            android:label="@string/title_activity_game"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PongGame.NoActionBar" />
+        <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

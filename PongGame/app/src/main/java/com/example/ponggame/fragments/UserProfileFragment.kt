@@ -1,4 +1,4 @@
-package com.example.ponggame
+package com.example.ponggame.fragments
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.example.ponggame.DatabaseImpl
+import com.example.ponggame.R
 import com.example.ponggame.databinding.FragmentUserProfileBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

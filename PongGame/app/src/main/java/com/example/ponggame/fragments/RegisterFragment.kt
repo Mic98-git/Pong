@@ -1,4 +1,4 @@
-package com.example.ponggame
+package com.example.ponggame.fragments
 
 import android.app.Activity
 import android.content.Intent
@@ -15,6 +15,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
+import com.example.ponggame.DatabaseImpl
+import com.example.ponggame.R
 import com.example.ponggame.databinding.FragmentRegisterBinding
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -91,7 +93,7 @@ class RegisterFragment : Fragment() {
         val registerButton = view.findViewById<Button>(R.id.register_button)
         registerButton.setOnClickListener {
             getTypedData()
-            if (insertedEmail.isNotEmpty() && insertedUsername.isNotEmpty() && insertedPassword.isNotEmpty() && checkPassword(insertedPassword, confirmedPassword)) {
+            if (insertedEmail.isNotEmpty() && insertedUsername.isNotEmpty() && insertedPassword.isNotEmpty()) {
                 if (!Patterns.EMAIL_ADDRESS.matcher(insertedEmail).matches())
                     Toast.makeText(
                         context,
@@ -102,6 +104,13 @@ class RegisterFragment : Fragment() {
                     Toast.makeText(
                         context,
                         "Min password should be 6 characters",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                if (!checkPassword(insertedPassword, confirmedPassword)){
+                    Toast.makeText(
+                        context,
+                        "The inserted passwords don't match",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

@@ -1,4 +1,4 @@
-package com.example.ponggame
+package com.example.ponggame.fragments
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
+import com.example.ponggame.DatabaseImpl
+import com.example.ponggame.R
 import com.example.ponggame.databinding.FragmentMenuBinding
 import com.google.firebase.database.*
 import java.io.File
@@ -68,6 +70,13 @@ class MenuFragment : Fragment() {
         myProfileButton.setOnClickListener {
             view.findNavController().navigate(
                 MenuFragmentDirections.actionMenuFragmentToUserProfileFragment()
+            )
+        }
+
+        val newGameButton = view.findViewById<Button>(R.id.new_game_button)
+        newGameButton.setOnClickListener {
+            view.findNavController().navigate(
+                MenuFragmentDirections.actionMenuFragmentToPongActivity()
             )
         }
     }

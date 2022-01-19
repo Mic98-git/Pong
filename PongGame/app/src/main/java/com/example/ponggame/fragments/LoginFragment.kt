@@ -1,4 +1,4 @@
-package com.example.ponggame
+package com.example.ponggame.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
+import com.example.ponggame.DatabaseImpl
+import com.example.ponggame.R
 import com.example.ponggame.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {

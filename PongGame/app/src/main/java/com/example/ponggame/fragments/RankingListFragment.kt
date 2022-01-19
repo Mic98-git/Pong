@@ -1,4 +1,4 @@
-package com.example.ponggame
+package com.example.ponggame.fragments
 
 import android.os.Bundle
 import android.view.*
@@ -9,6 +9,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ponggame.DatabaseImpl
+import com.example.ponggame.RankingListAdapter
+import com.example.ponggame.User
 import com.example.ponggame.databinding.FragmentRankingListBinding
 import com.google.firebase.database.*
 
