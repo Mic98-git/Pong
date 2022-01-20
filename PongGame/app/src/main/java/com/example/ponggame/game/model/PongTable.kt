@@ -5,6 +5,10 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
@@ -13,6 +17,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.example.ponggame.R
 import com.example.ponggame.game.utils.*
 import java.util.*
@@ -38,6 +43,8 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
     private var moving = false
     private var mlastTouchX = 0f
 
+
+
     private fun initPongTable(ctx: Context, attr: AttributeSet?) {
         mContext = ctx
         mHolder = holder
@@ -58,7 +65,6 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         })
 
 
-
         val a = ctx.obtainStyledAttributes(attr, R.styleable.PongTable)
         val racketWidth = a.getInteger(R.styleable.PongTable_racketHeight, 440)
         val racketHeight = a.getInteger(R.styleable.PongTable_racketWidth, 50)
@@ -75,7 +81,6 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         opponentPaint.isAntiAlias = true
         opponentPaint.color = ContextCompat.getColor(mContext!!, R.color.opponent_color)
         mOpponent = Player(racketWidth, racketHeight, paint = opponentPaint)
-
 
 
         // Set Ball
@@ -167,13 +172,13 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         if (mOpponent!!.bounds.left > ball!!.cx) {
             movePlayer(
                 mOpponent,
-                mOpponent!!.bounds.left - PHY_RACQUET_SPEED,
+                mOpponent!!.bounds.left - (PHY_RACQUET_SPEED + 5f),
                 mOpponent!!.bounds.top
             )
         } else if (mOpponent!!.bounds.left + mOpponent!!.requestWidth < ball!!.cx) {
             movePlayer(
                 mOpponent,
-                mOpponent!!.bounds.left + PHY_RACQUET_SPEED,
+                mOpponent!!.bounds.left + (PHY_RACQUET_SPEED + 5f),
                 mOpponent!!.bounds.top
             )
         }
@@ -268,6 +273,7 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         return true
     }
 
+    // Tells you whether the racket body has been touched
     private fun isTouchOnRacket(event: MotionEvent, mPlayer: Player?): Boolean {
         return mPlayer!!.bounds.contains(event.x, event.y)
     }
@@ -306,8 +312,9 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
 
     private fun placePlayers() {
         player!!.bounds.offsetTo(
-            ((mTableWidth - player!!.requestWidth) / 2).toFloat()
-            ,((mTableHeight - player!!.requestHeight) - 2).toFloat())
+            ((mTableWidth - player!!.requestWidth) / 2).toFloat(),
+            ((mTableHeight - player!!.requestHeight) - 2).toFloat()
+        )
         mOpponent!!.bounds.offsetTo(
             ((mTableWidth - mOpponent!!.requestWidth) / 2).toFloat(),
             2f

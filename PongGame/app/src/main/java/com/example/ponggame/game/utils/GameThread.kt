@@ -83,6 +83,10 @@ class GameThread(
         }
     }
 
+    fun getIntState(): Int {
+        return this.mGameState.toInt()
+    }
+
     fun setUpNewRound() {
         synchronized(mSurfaceHolder) { mPongTable.setupTable() }
     }
