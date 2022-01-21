@@ -15,17 +15,26 @@ import com.example.ponggame.game.model.PongTable
 import com.example.ponggame.game.utils.GameThread
 import com.example.ponggame.game.utils.PHY_RACQUET_SPEED
 import com.example.ponggame.game.utils.STATE_RUNNING
+import java.sql.Timestamp
+import kotlin.math.abs
+import kotlin.math.pow
 
 class PongActivity : AppCompatActivity(), SensorEventListener {
     private var mGameThread: GameThread? = null
 
     lateinit var table: PongTable
-    private  var xAxisValue: Float = 0f
+    private var xAxisValue: Float = 0f
     private lateinit var player: Player
+    private var dx: Float = 0f
 
     // Sensor elements
     private lateinit var sensorManager: SensorManager
     private lateinit var accelSensor: Sensor
+
+    var currentTime: Long = 0
+    var previousTime: Long = 0
+    var currentAcceleration: Float = 0f
+    var previousAcceleration: Float = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,21 +72,36 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(sensorEvent: SensorEvent) {
         player = table.player!!
         // >0 goes to left
-         xAxisValue = sensorEvent.values[0]
+        this.currentAcceleration = sensorEvent.values[0]
+        this.currentTime = sensorEvent.timestamp
 
-        //val view = findViewById<View>(R.id.pong_constraint_layout)
-        //view.findViewById<TextView>(R.id.main_text).text = xAxisValue.toString()
-
-        if(this.mGameThread?.getIntState() == STATE_RUNNING) {
+        if (this.mGameThread?.getIntState() == STATE_RUNNING) {
             this.table.movePlayer(
                 player,
-                player!!.bounds.left - (xAxisValue * 200f),
+                player!!.bounds.left - computeDx(
+                    this.currentAcceleration, this.currentTime
+                ) / 200000000000000,
                 player!!.bounds.top
             )
         }
+        //val view = findViewById<View>(R.id.pong_constraint_layout)
+        //view.findViewById<TextView>(R.id.main_text).text = xAxisValue.toString()
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
+
+    fun nanosecToSec(nanoseconds: Long): Float {
+        return (nanoseconds / 1000000).toFloat()
+    }
+
+    fun computeDx(currentAcc: Float, currentT: Long): Float {
+        dx = currentAcc * nanosecToSec(currentT).pow(2) -
+                previousAcceleration * nanosecToSec(previousTime).pow(2)
+        this.previousAcceleration = currentAcc
+        this.previousTime = currentT
+        return dx
+    }
+
 
 }

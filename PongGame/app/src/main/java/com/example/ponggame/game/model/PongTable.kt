@@ -44,6 +44,10 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
     private var mlastTouchX = 0f
 
 
+    fun getBall(): Ball? {
+        return this.ball
+    }
+
 
     private fun initPongTable(ctx: Context, attr: AttributeSet?) {
         mContext = ctx
