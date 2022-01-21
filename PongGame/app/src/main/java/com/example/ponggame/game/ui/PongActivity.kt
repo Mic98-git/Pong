@@ -7,20 +7,18 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
 import com.example.ponggame.game.model.Player
 import com.example.ponggame.game.model.PongTable
 import com.example.ponggame.game.utils.GameThread
-import com.example.ponggame.game.utils.PHY_RACQUET_SPEED
 import com.example.ponggame.game.utils.STATE_RUNNING
 
 class PongActivity : AppCompatActivity(), SensorEventListener {
     private var mGameThread: GameThread? = null
-
-    lateinit var table: PongTable
-    private  var xAxisValue: Float = 0f
+    private lateinit var table: PongTable
+    private var xAxisValue: Float = 0f
     private lateinit var player: Player
 
     // Sensor elements
@@ -31,12 +29,10 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pong)
 
-
         table = findViewById<View>(R.id.pongTable) as PongTable
         table.setScoreOpponent(findViewById<View>(R.id.tvScoreOpponent) as TextView)
         table.setScorePlayer(findViewById<View>(R.id.tvScorePlayer) as TextView)
         table.setStatus(findViewById<View>(R.id.tvStatus) as TextView)
-
 
         mGameThread = table.game
 
@@ -68,7 +64,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         //val view = findViewById<View>(R.id.pong_constraint_layout)
         //view.findViewById<TextView>(R.id.main_text).text = xAxisValue.toString()
 
-        if(this.mGameThread?.getIntState() == STATE_RUNNING) {
+        if (this.mGameThread?.getIntState() == STATE_RUNNING) {
             this.table.movePlayer(
                 player,
                 player!!.bounds.left - (xAxisValue * 200f),
@@ -78,6 +74,12 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
+
+    override fun onBackPressed() {
+        val scoreDifference : Int = table.player!!.score - table.getMOpponent()!!.score
+        DatabaseImpl.updateUserScore(scoreDifference)
+        super.onBackPressed()
     }
 
 }
