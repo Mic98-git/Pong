@@ -7,17 +7,13 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
 import com.example.ponggame.game.model.Player
 import com.example.ponggame.game.model.PongTable
 import com.example.ponggame.game.utils.GameThread
-import com.example.ponggame.game.utils.PHY_RACQUET_SPEED
 import com.example.ponggame.game.utils.STATE_RUNNING
-import java.sql.Timestamp
-import kotlin.math.abs
 import kotlin.math.pow
 
 class PongActivity : AppCompatActivity(), SensorEventListener {
@@ -77,7 +73,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         this.currentAcceleration = sensorEvent.values[0]
         this.currentTime = sensorEvent.timestamp
 
-        if(this.mGameThread?.getIntState() == STATE_RUNNING) {
+        if (this.mGameThread?.getIntState() == STATE_RUNNING) {
             this.table.movePlayer(
                 player,
                 player!!.bounds.left - computeDx(
