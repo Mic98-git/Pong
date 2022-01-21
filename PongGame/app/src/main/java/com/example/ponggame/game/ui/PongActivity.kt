@@ -7,12 +7,14 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
 import com.example.ponggame.game.model.Player
 import com.example.ponggame.game.model.PongTable
 import com.example.ponggame.game.utils.GameThread
+import com.example.ponggame.game.utils.PHY_RACQUET_SPEED
 import com.example.ponggame.game.utils.STATE_RUNNING
 import java.sql.Timestamp
 import kotlin.math.abs
@@ -21,10 +23,9 @@ import kotlin.math.pow
 class PongActivity : AppCompatActivity(), SensorEventListener {
     private var mGameThread: GameThread? = null
 
-    lateinit var table: PongTable
     private lateinit var table: PongTable
+    private  var xAxisValue: Float = 0f
 
-    private var xAxisValue: Float = 0f
     private lateinit var player: Player
     private var dx: Float = 0f
 
@@ -41,10 +42,12 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pong)
 
+
         table = findViewById<View>(R.id.pongTable) as PongTable
         table.setScoreOpponent(findViewById<View>(R.id.tvScoreOpponent) as TextView)
         table.setScorePlayer(findViewById<View>(R.id.tvScorePlayer) as TextView)
         table.setStatus(findViewById<View>(R.id.tvStatus) as TextView)
+
 
         mGameThread = table.game
 
@@ -74,7 +77,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         this.currentAcceleration = sensorEvent.values[0]
         this.currentTime = sensorEvent.timestamp
 
-        if (this.mGameThread?.getIntState() == STATE_RUNNING) {
+        if(this.mGameThread?.getIntState() == STATE_RUNNING) {
             this.table.movePlayer(
                 player,
                 player!!.bounds.left - computeDx(
@@ -90,7 +93,6 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
-<<<<<<< HEAD
     fun nanosecToSec(nanoseconds: Long): Float {
         return (nanoseconds / 1000000).toFloat()
     }
@@ -104,12 +106,10 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     }
 
 
-=======
     override fun onBackPressed() {
         val scoreDifference : Int = table.player!!.score - table.getMOpponent()!!.score
         DatabaseImpl.updateUserScore(scoreDifference)
         super.onBackPressed()
     }
 
->>>>>>> d25aeb679f1afcb06bdec569dacff5fdf8d0f85e
 }
