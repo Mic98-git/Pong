@@ -20,12 +20,10 @@ import kotlin.math.pow
 
 class PongActivity : AppCompatActivity(), SensorEventListener {
     private var mGameThread: GameThread? = null
-<<<<<<< HEAD
 
     lateinit var table: PongTable
-=======
     private lateinit var table: PongTable
->>>>>>> d25aeb679f1afcb06bdec569dacff5fdf8d0f85e
+
     private var xAxisValue: Float = 0f
     private lateinit var player: Player
     private var dx: Float = 0f
