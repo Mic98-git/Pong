@@ -63,14 +63,14 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         }, object : Handler() {
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
-                mScorePlayer!!.text = msg.data.getString("player")
-                mScoreOpponent!!.text = msg.data.getString("opponent")
+                mScorePlayer!!.text = "You: " + msg.data.getString("player")
+                mScoreOpponent!!.text = "Cpu: " + msg.data.getString("opponent")
             }
         })
 
 
         val a = ctx.obtainStyledAttributes(attr, R.styleable.PongTable)
-        val racketWidth = a.getInteger(R.styleable.PongTable_racketHeight, 440)
+        val racketWidth = a.getInteger(R.styleable.PongTable_racketHeight, 380)
         val racketHeight = a.getInteger(R.styleable.PongTable_racketWidth, 50)
         val ballRadius = a.getInteger(R.styleable.PongTable_ballRadius, 25)
 
