@@ -32,12 +32,12 @@ class MenuFragment : Fragment() {
         Log.d("MenuFragment", "Menu Fragment created!")
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
         setActivityTitle("Menu")
+        (activity as AppCompatActivity?)!!.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.menuConstraintLayout
-
         val localFile = File.createTempFile("tempImage", "")
         DatabaseImpl.getProfilePicture(localFile).addOnSuccessListener {
             val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)

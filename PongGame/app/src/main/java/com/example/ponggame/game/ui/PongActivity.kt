@@ -41,12 +41,10 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pong)
 
-
         table = findViewById<View>(R.id.pongTable) as PongTable
         table.setScoreOpponent(findViewById<View>(R.id.tvScoreOpponent) as TextView)
         table.setScorePlayer(findViewById<View>(R.id.tvScorePlayer) as TextView)
         table.setStatus(findViewById<View>(R.id.tvStatus) as TextView)
-
 
         mGameThread = table.game
 
@@ -115,8 +113,6 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
     }
-
 
 }
