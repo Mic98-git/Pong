@@ -1,6 +1,7 @@
 package com.example.ponggame
 
 import android.graphics.BitmapFactory
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 
-class RankingListAdapter(private var users: ArrayList<User>) : RecyclerView.Adapter<RankingListAdapter.ViewHolder>() {
+class RankingListAdapter(private var users: ArrayList<User>, private var email: String) : RecyclerView.Adapter<RankingListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_view, parent, false))
@@ -17,7 +18,13 @@ class RankingListAdapter(private var users: ArrayList<User>) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user : User = users[position]
-        holder.username.text = user.username
+        if (email == user.email) {
+            holder.username.setTypeface(null, Typeface.BOLD)
+            holder.username.text = user.username + " (You)"
+        }
+        else {
+            holder.username.text = user.username
+        }
         holder.score.text = user.score.toString()
         holder.position.text = (position+1).toString()
         val localFile = File.createTempFile("tempImage", "")

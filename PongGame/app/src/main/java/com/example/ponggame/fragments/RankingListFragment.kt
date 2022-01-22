@@ -20,6 +20,7 @@ class RankingListFragment : Fragment() {
     private var _binding: FragmentRankingListBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
+    private val currentUserEmail : String = DatabaseImpl.getAuthInstance().currentUser?.email.toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,7 @@ class RankingListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView = binding.rankingRecyclerView
         val users: ArrayList<User> = arrayListOf()
-        val rankingListAdapter = RankingListAdapter(users)
+        val rankingListAdapter = RankingListAdapter(users, currentUserEmail)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.adapter = rankingListAdapter
