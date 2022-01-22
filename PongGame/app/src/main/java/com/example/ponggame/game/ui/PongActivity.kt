@@ -5,6 +5,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +21,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     private var mGameThread: GameThread? = null
 
     private lateinit var table: PongTable
-    private  var xAxisValue: Float = 0f
+    private var xAxisValue: Float = 0f
 
     private lateinit var player: Player
     private var dx: Float = 0f
@@ -28,6 +29,8 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     // Sensor elements
     private lateinit var sensorManager: SensorManager
     private lateinit var accelSensor: Sensor
+
+    private var done: Boolean = false
 
     var currentTime: Long = 0
     var previousTime: Long = 0
@@ -73,15 +76,16 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         this.currentAcceleration = sensorEvent.values[0]
         this.currentTime = sensorEvent.timestamp
 
+
         if (this.mGameThread?.getIntState() == STATE_RUNNING) {
-            this.table.movePlayer(
-                player,
-                player!!.bounds.left - computeDx(
+            this.table.movePlayerRacquet(
+                - computeDx(
                     this.currentAcceleration, this.currentTime
                 ) / 200000000000000,
-                player!!.bounds.top
+                player
             )
         }
+
         //val view = findViewById<View>(R.id.pong_constraint_layout)
         //view.findViewById<TextView>(R.id.main_text).text = xAxisValue.toString()
     }
@@ -101,11 +105,18 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         return dx
     }
 
+    override fun onDestroy() {
+        if(!done) {
+            val scoreDifference: Int = table.player!!.score - table.getMOpponent()!!.score
+            DatabaseImpl.updateUserScore(scoreDifference)
+            done = true
+        }
+        super.onDestroy()
+    }
 
     override fun onBackPressed() {
-        val scoreDifference : Int = table.player!!.score - table.getMOpponent()!!.score
-        DatabaseImpl.updateUserScore(scoreDifference)
         super.onBackPressed()
     }
+
 
 }

@@ -48,6 +48,21 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         return this.ball
     }
 
+    fun getMoving(): Boolean {
+        return  this.moving
+    }
+
+    fun setMoving(moving: Boolean){
+        this.moving = moving
+    }
+
+    fun setMlastTouchX(x: Float){
+        this.mlastTouchX = x
+    }
+
+    fun getMlastTouchX(): Float{
+        return this.mlastTouchX
+    }
 
     private fun initPongTable(ctx: Context, attr: AttributeSet?) {
         mContext = ctx
@@ -282,7 +297,7 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         return mPlayer!!.bounds.contains(event.x, event.y)
     }
 
-    private fun movePlayerRacquet(dx: Float, player: Player?) {
+    fun movePlayerRacquet(dx: Float, player: Player?) {
         synchronized(mHolder!!) {
             movePlayer(
                 player,
