@@ -21,7 +21,6 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     private var mGameThread: GameThread? = null
 
     private lateinit var table: PongTable
-    private var xAxisValue: Float = 0f
 
     private lateinit var player: Player
     private var dx: Float = 0f
@@ -104,15 +103,12 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onDestroy() {
-        if(!done) {
-            val scoreDifference: Int = table.player!!.score - table.getMOpponent()!!.score
-            DatabaseImpl.updateUserScore(scoreDifference)
-            done = true
-        }
         super.onDestroy()
     }
 
     override fun onBackPressed() {
+        DatabaseImpl.updateUserScore(this.table.getUserScore())
+        super.onBackPressed()
     }
 
 }

@@ -43,24 +43,27 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
     private var moving = false
     private var mlastTouchX = 0f
 
+    // Handle DB score
+    private var userScore: Int = 0
+
 
     fun getBall(): Ball? {
         return this.ball
     }
 
     fun getMoving(): Boolean {
-        return  this.moving
+        return this.moving
     }
 
-    fun setMoving(moving: Boolean){
+    fun setMoving(moving: Boolean) {
         this.moving = moving
     }
 
-    fun setMlastTouchX(x: Float){
+    fun setMlastTouchX(x: Float) {
         this.mlastTouchX = x
     }
 
-    fun getMlastTouchX(): Float{
+    fun getMlastTouchX(): Float {
         return this.mlastTouchX
     }
 
@@ -268,7 +271,7 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> if (game!!.isBetweenRounds) {
                     game!!.setState(STATE_RUNNING)
-                } else {
+                } /*else {
                     if (isTouchOnRacket(event, player)) {
                         moving = true
                         mlastTouchX = event.x
@@ -279,7 +282,7 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
                     val dx = x - mlastTouchX
                     mlastTouchX = x
                     movePlayerRacquet(dx, player)
-                }
+                }*/
                 MotionEvent.ACTION_UP -> moving = false
             }
         } else {
@@ -361,6 +364,20 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
 
     fun setStatus(view: TextView?) {
         mStatus = view
+    }
+
+    fun updateUserScore(value: Int) {
+        // You scored
+        if (value == 1) {
+            this.userScore++
+            // Opponent scored
+        } else if (value == 2) {
+            this.userScore--
+        }
+    }
+
+    fun getUserScore(): Int {
+        return this.userScore
     }
 
 

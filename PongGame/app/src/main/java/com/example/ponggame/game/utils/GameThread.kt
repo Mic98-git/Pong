@@ -71,11 +71,15 @@ class GameThread(
                 STATE_WIN -> {
                     setStatusText(res.getString(R.string.mode_win))
                     mPongTable.player!!.score++
+                    // User score incremented
+                    mPongTable.updateUserScore(1)
                     setUpNewRound()
                 }
                 STATE_LOSE -> {
                     setStatusText(res.getString(R.string.mode_loss))
                     mPongTable.getMOpponent()!!.score++
+                    // User score decremented
+                    mPongTable.updateUserScore(2)
                     setUpNewRound()
                 }
                 STATE_PAUSED -> setStatusText(res.getString(R.string.mode_paused))

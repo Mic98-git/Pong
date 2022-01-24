@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
+import com.example.ponggame.game.model.PongTable
 import com.example.ponggame.databinding.FragmentMenuBinding
 import com.google.firebase.database.*
 import java.io.File
@@ -30,6 +31,7 @@ class MenuFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         Log.d("MenuFragment", "Menu Fragment created!")
+
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
         setActivityTitle("Menu")
         (activity as AppCompatActivity?)!!.supportActionBar?.setDisplayHomeAsUpEnabled(false)
