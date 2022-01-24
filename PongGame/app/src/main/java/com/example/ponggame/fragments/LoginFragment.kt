@@ -44,6 +44,8 @@ class LoginFragment : Fragment() {
         Log.d("LoginFragment", "Login Fragment created!")
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         setActivityTitle("Login")
+        (activity as AppCompatActivity?)!!.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        (activity as AppCompatActivity?)!!.supportActionBar?.show()
         return binding.root
     }
 

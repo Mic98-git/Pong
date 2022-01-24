@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/layout/content_game.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/layout/fragment_first.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/layout/fragment_game.xml" value="0.24427083333333333" />
+        <entry key="app/src/main/res/layout/fragment_home_page.xml" value="0.1921875" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_menu.xml" value="0.25885416666666666" />
         <entry key="app/src/main/res/layout/fragment_ranking_list.xml" value="0.2390625" />

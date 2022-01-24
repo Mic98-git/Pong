@@ -34,6 +34,7 @@ class RankingListFragment : Fragment() {
         _binding = FragmentRankingListBinding.inflate(inflater, container, false)
         val view = binding.root
         setActivityTitle("Ranking List")
+        (activity as AppCompatActivity?)!!.supportActionBar?.show()
         return view
     }
 

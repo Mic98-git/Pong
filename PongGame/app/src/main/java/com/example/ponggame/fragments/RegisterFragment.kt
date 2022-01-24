@@ -75,6 +75,7 @@ class RegisterFragment : Fragment() {
     ): View? {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         setActivityTitle("Register")
+        (activity as AppCompatActivity?)!!.supportActionBar?.show()
 
         val selectImageButton = binding.root.findViewById<ImageButton>(R.id.add_profile_image_button)
         selectImageButton.setOnClickListener {
