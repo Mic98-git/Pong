@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import com.example.ponggame.R
 import com.example.ponggame.databinding.FragmentHomePageBinding
@@ -16,6 +17,7 @@ import com.example.ponggame.databinding.FragmentHomePageBinding
 class HomePageFragment : Fragment() {
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
+    private lateinit var constraintLayout: ConstraintLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +30,7 @@ class HomePageFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        constraintLayout = binding.homeConstraintLayout
         val pressToStart = view.findViewById<Button>(R.id.press_button)
         pressToStart.setOnClickListener {
             view.findNavController().navigate(
