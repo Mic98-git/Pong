@@ -139,7 +139,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
             this.table.movePlayerRacquet(
                 -computeDx(
                     this.currentAcceleration, this.currentTime
-                ) / 200000000000000,
+                ) / 600000000000000,
                 player
             )
         }

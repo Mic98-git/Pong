@@ -81,7 +81,7 @@
         android:id="@+id/quit_game_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="280dp"
+        android:layout_marginBottom="310dp"
         android:background="@null"
         android:src="@drawable/ic_cross_50"
         app:layout_constraintBottom_toBottomOf="parent"
