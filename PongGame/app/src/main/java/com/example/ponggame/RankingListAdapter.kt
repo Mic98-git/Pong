@@ -26,6 +26,7 @@ class RankingListAdapter(private var users: ArrayList<User>, private var email: 
             holder.username.text = user.username
         }
         holder.score.text = user.score.toString()
+        holder.position.setTypeface(null, Typeface.BOLD)
         holder.position.text = (position+1).toString()
         val localFile = File.createTempFile("tempImage", "")
         DatabaseImpl.getReferenceToUsersProfilePictures().child(user.uid.toString()).getFile(localFile).addOnSuccessListener {
