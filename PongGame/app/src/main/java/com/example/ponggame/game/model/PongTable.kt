@@ -285,7 +285,8 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
                 }*/
                 MotionEvent.ACTION_UP -> moving = false
             }
-        } else {
+        }
+        else {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 if (game!!.isBetweenRounds) {
                     game!!.setState(STATE_RUNNING)
