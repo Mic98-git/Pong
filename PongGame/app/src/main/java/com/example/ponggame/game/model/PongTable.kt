@@ -267,6 +267,16 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
     /*In case of problems: mlastTouchX -> mlastTouchY
     * all x's to y*/
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if(
+            game!!.getIntState() == STATE_READY ||
+                game!!.getIntState() == STATE_WIN ||
+                game!!.getIntState() == STATE_LOSE) {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> if (game!!.isBetweenRounds) {
+                    game!!.setState(STATE_RUNNING)
+                }
+            }
+            /*
         if (!game!!.SensorsOn()) {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> if (game!!.isBetweenRounds) {
@@ -292,6 +302,8 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
                     game!!.setState(STATE_RUNNING)
                 }
             }
+        }
+        */
         }
         return true
     }

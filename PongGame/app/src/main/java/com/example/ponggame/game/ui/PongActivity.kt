@@ -63,7 +63,11 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
 
         builder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
-            mGameThread!!.setState(STATE_RUNNING)
+            mGameThread!!.setState(STATE_PAUSED)
+            toggleButton.isChecked = true
+            flag = true
+            toggleButton.setBackgroundResource(0)
+            toggleButton.setBackgroundResource(R.drawable.ic_play_50)
         })
 
         builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, which ->
@@ -97,6 +101,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         quitButton.setOnClickListener {
             mGameThread!!.setState(STATE_PAUSED)
             val alert = builder.create()
+            alert.setCancelable(false)
             alert.show()
         }
 
