@@ -39,7 +39,7 @@ class RegisterFragment : Fragment() {
             val res: Intent? = result.data
             if (res != null) run {
                 profileUri = res.data!!
-                profileImage = binding.root.findViewById(R.id.profile_image_icon_register)
+                profileImage = binding.root.findViewById(R.id.profile_image)
                 profileImage.setImageURI(profileUri)
                 imageSelected = true
             }

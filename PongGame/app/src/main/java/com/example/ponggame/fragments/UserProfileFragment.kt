@@ -6,9 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -26,6 +24,10 @@ class UserProfileFragment : Fragment() {
     private var _binding: FragmentUserProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
+
+    private lateinit var usernameInputText: EditText
+    private lateinit var userUsername: TextView
+    private var editing: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,12 +61,30 @@ class UserProfileFragment : Fragment() {
             })
         }
 
-        val updateProfileButton = view.findViewById<Button>(R.id.update_profile_button)
-        updateProfileButton.setOnClickListener {
+        // Initialize buttons
+        val logOutButton = view.findViewById<Button>(R.id.log_out_button)
+        val undoButton = view.findViewById<Button>(R.id.undo_update_button)
+        val confirmButton = view.findViewById<Button>(R.id.confirm_update_button)
+
+
+        // Handling edit text buttons
+        userUsername = view.findViewById(R.id.user_username)
+        usernameInputText = view.findViewById(R.id.user_username_input)
+        val editUsernameButton = view.findViewById<ImageButton>(R.id.edit_username_button)
+        editUsernameButton.setOnClickListener {
+            if(!editing) {
+                editing = true
+                editUsernameButton.visibility = View.INVISIBLE
+                userUsername.visibility = View.INVISIBLE
+                usernameInputText.visibility = View.VISIBLE
+                logOutButton.visibility = View.INVISIBLE
+                undoButton.visibility = View.VISIBLE
+                confirmButton.visibility = View.VISIBLE
+            }
         }
 
-        val signOutButton = view.findViewById<Button>(R.id.log_out_button)
-        signOutButton.setOnClickListener {
+
+        logOutButton.setOnClickListener {
             logOut()
             view.findNavController().navigate(
                 UserProfileFragmentDirections.actionUserProfileFragmentToLoginFragment()
@@ -94,7 +114,7 @@ class UserProfileFragment : Fragment() {
         val localFile = File.createTempFile("tempImage", "")
         DatabaseImpl.getProfilePicture(localFile).addOnSuccessListener {
             val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-            binding.profileImageIcon.setImageBitmap(bitmap)
+            binding.profileImage.setImageBitmap(bitmap)
         }
     }
 }
