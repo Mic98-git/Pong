@@ -47,8 +47,9 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     // Variables to handle buttons
     private lateinit var toggleButton: ToggleButton
     var flag: Boolean = false
-
     private lateinit var quitButton: ImageButton
+
+    private lateinit var builder: AlertDialog.Builder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +58,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         toggleButton = findViewById(R.id.play_pause_button)
         quitButton = findViewById(R.id.quit_game_button)
 
-        var builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder = AlertDialog.Builder(this)
         builder.setTitle("Quit game")
         builder.setMessage("Do you want to quit?")
 
@@ -105,6 +106,10 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
             alert.show()
         }
 
+        // Sensor body
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
 
         table = findViewById<View>(R.id.pongTable) as PongTable
         table.setScoreOpponent(findViewById<View>(R.id.tvScoreOpponent) as TextView)
@@ -112,10 +117,6 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         table.setStatus(findViewById<View>(R.id.tvStatus) as TextView)
 
         mGameThread = table.game
-
-        // Sensor body
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
     }
 
@@ -144,7 +145,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
             this.table.movePlayerRacquet(
                 -computeDx(
                     this.currentAcceleration, this.currentTime
-                ) / 600000000000000,
+                ) / 8000000000000, // 12 zeroes
                 player
             )
         }

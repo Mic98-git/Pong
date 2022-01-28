@@ -1,5 +1,8 @@
 package com.example.ponggame
 
+import android.media.MediaPlayer
+import android.net.Uri
+import android.nfc.NdefRecord.createUri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -9,6 +12,7 @@ import com.example.ponggame.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
+    private lateinit var mediaUri: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +26,11 @@ class MainActivity : AppCompatActivity() {
         // This ensures action bar (app bar) buttons, like the
         // menu option in LetterListFragment are visible.
         setupActionBarWithNavController(navController)
+        /*
+        mediaUri = MediaPlayer.create(this, R.raw.main_theme)
+        mediaUri.isLooping
+        mediaUri.start()
+         */
     }
 
     override fun onSupportNavigateUp(): Boolean {
