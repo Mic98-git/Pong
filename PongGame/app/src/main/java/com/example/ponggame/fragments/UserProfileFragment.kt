@@ -117,6 +117,7 @@ class UserProfileFragment : Fragment() {
                 editing = true
                 editInputTextVisibilityOn()
                 editButtonsVisibilityOn()
+                usernameInputText.requestFocus()
             }
         }
 
