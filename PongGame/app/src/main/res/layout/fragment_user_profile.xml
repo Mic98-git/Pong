@@ -12,17 +12,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout_profile_image"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="180dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:importantForAccessibility="no"
             android:scaleType="centerCrop"
             android:src="@drawable/user_default_image"
@@ -52,7 +51,7 @@
         android:layout_marginStart="44dp"
         android:layout_marginTop="50dp"
         android:text="Email"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraint_layout_profile_image" />
 
@@ -62,7 +61,7 @@
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
         android:gravity="center_vertical"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@id/email_label"
         app:layout_constraintTop_toBottomOf="@id/email_label" />
 
@@ -83,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Username"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@id/user_email"
         app:layout_constraintTop_toBottomOf="@id/user_email" />
 
@@ -93,7 +92,7 @@
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
         android:gravity="center_vertical"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@id/username_label"
         app:layout_constraintTop_toBottomOf="@id/username_label" />
 
@@ -102,7 +101,7 @@
         android:layout_width="180dp"
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@id/username_label"
         app:layout_constraintTop_toBottomOf="@id/username_label"/>
@@ -114,7 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Total score"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@id/user_username"
         app:layout_constraintTop_toBottomOf="@id/user_username" />
 
@@ -124,7 +123,7 @@
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
         android:gravity="center_vertical"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@id/score_label"
         app:layout_constraintTop_toBottomOf="@id/score_label" />
 
@@ -132,35 +131,35 @@
         android:id="@+id/confirm_update_button"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
         android:text="Confirm"
         android:visibility="invisible"
         app:cornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_score" />
+        app:layout_constraintTop_toBottomOf="@id/user_score"
+        app:layout_constraintBottom_toTopOf="@id/undo_update_button"/>
 
     <Button
         android:id="@+id/undo_update_button"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:text="Cancel"
         android:visibility="invisible"
         app:cornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/confirm_update_button" />
+        app:layout_constraintTop_toBottomOf="@id/confirm_update_button"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <Button
         android:id="@+id/log_out_button"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:text="Log out"
         app:cornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/confirm_update_button" />
+        app:layout_constraintTop_toBottomOf="@id/confirm_update_button"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

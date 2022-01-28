@@ -11,27 +11,25 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout_profile_image"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="180dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:layout_centerInParent="true"
             android:importantForAccessibility="no"
             android:src="@drawable/user_default_image"
-            app:civ_border_width="1dp"
             app:civ_border_color="#FF000000"
+            app:civ_border_width="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-             />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/add_profile_image_button"
@@ -39,8 +37,8 @@
             android:layout_height="50dp"
             android:background="@android:color/transparent"
             android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="@id/profile_image"
             app:layout_constraintBottom_toBottomOf="@id/profile_image"
+            app:layout_constraintEnd_toEndOf="@id/profile_image"
             app:srcCompat="@drawable/ic_add_circle_35"
             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -51,8 +49,9 @@
         android:id="@+id/email_register"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="350dp"
         android:hint="Insert your email"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraint_layout_profile_image">
@@ -68,9 +67,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/username_register"
         android:layout_width="320dp"
-        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="300dp"
+        android:layout_height="wrap_content"
         android:hint="Choose a username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,8 +85,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password_register"
         android:layout_width="320dp"
-        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
         android:hint="Choose a password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -104,8 +102,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/confirm_password_register"
         android:layout_width="320dp"
-        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
         android:hint="Confirm password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -122,11 +120,10 @@
         android:id="@+id/register_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
         android:text="Register"
         app:cornerRadius="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/confirm_password_register" />
 
