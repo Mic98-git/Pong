@@ -9,6 +9,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
@@ -46,6 +47,9 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
     // Handle DB score
     private var userScore: Int = 0
 
+    // Handle sound effect
+    private lateinit var mediaUri: MediaPlayer
+
 
     fun getBall(): Ball? {
         return this.ball
@@ -71,6 +75,7 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         mContext = ctx
         mHolder = holder
         mHolder!!.addCallback(this)
+        mediaUri = MediaPlayer.create(mContext, R.raw.pop)
 
         game = GameThread(this.context, mHolder!!, this, object : Handler() {
             override fun handleMessage(msg: Message) {
@@ -147,6 +152,7 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         player!!.draw(canvas)
         mOpponent!!.draw(canvas)
         ball!!.draw(canvas)
+
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -210,9 +216,11 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         when {
             checkCollisionPlayer(player, ball) -> {
                 handleCollision(player, ball)
+                mediaUri.start()
             }
             checkCollisionPlayer(mOpponent, ball) -> {
                 handleCollision(mOpponent, ball)
+                mediaUri.start()
             }
             checkCollisionWithLeftOrRightWall() -> {
                 ball!!.velocity_x = -ball!!.velocity_x

@@ -8,7 +8,9 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
@@ -26,19 +28,16 @@ import com.example.ponggame.game.utils.STATE_RUNNING
 import kotlin.math.pow
 
 class PongActivity : AppCompatActivity(), SensorEventListener {
+
+    // Game elements
     private var mGameThread: GameThread? = null
-
     private lateinit var table: PongTable
-
     private lateinit var player: Player
     private var dx: Float = 0f
 
     // Sensor elements
     private lateinit var sensorManager: SensorManager
     private lateinit var accelSensor: Sensor
-
-    private var done: Boolean = false
-
     var currentTime: Long = 0
     var previousTime: Long = 0
     var currentAcceleration: Float = 0f
@@ -49,7 +48,12 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     var flag: Boolean = false
     private lateinit var quitButton: ImageButton
 
+    // Alert
     private lateinit var builder: AlertDialog.Builder
+
+    // Song & sound effects
+    private lateinit var mediaUri: MediaPlayer
+    private var isPlaying: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,16 +122,15 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
 
         mGameThread = table.game
 
+        // Start song
+        mediaUri = MediaPlayer.create(this, R.raw.pong_theme)
+        mediaUri.isLooping
+
     }
 
     override fun onResume() {
         super.onResume()
         sensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        sensorManager.unregisterListener(this)
     }
 
     /**
@@ -145,7 +148,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
             this.table.movePlayerRacquet(
                 -computeDx(
                     this.currentAcceleration, this.currentTime
-                ) / 8000000000000, // 12 zeroes
+                ) / 80000000000000, // 12 zeroes
                 player
             )
         }
@@ -171,6 +174,34 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    override fun onRestart() {
+        if(!isPlaying){
+            mediaUri = MediaPlayer.create(this, R.raw.main_theme)
+            mediaUri.isLooping
+        }
+        Log.d("PongActivity", "On Restart launched!")
+        super.onRestart()
+    }
+
+    override fun onStart() {
+        if(!isPlaying){
+            mediaUri.start()
+            isPlaying = true
+        }
+        Log.d("PongActivity", "On Start launched! ${isPlaying}")
+        super.onStart()
+    }
+
+    override fun onPause() {
+        if(isPlaying){
+            mediaUri.stop()
+            isPlaying = false
+        }
+        Log.d("PongActivity", "On Pause launched! ${isPlaying}")
+        super.onPause()
+        sensorManager.unregisterListener(this)
     }
 
     override fun onBackPressed() {
