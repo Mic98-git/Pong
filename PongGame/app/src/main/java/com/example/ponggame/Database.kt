@@ -19,6 +19,10 @@ interface Database {
 
     fun loginUser(email : String, password : String): Task<AuthResult>
 
+    fun resetPassword(email: String): Task<Void>
+
+    fun sendEmailVerification(): Task<Void>
+
     fun logOut()
 
     fun getCurrentUserId(): String

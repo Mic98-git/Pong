@@ -8,7 +8,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="4dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#E6D2FF">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -38,6 +39,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
             android:text="Username"
+            android:textColor="@color/black"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textSize="50px"
             app:layout_constraintStart_toEndOf="@id/user_image"
@@ -50,6 +52,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="4dp"
             android:text="Score"
+            android:textColor="@color/black"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="45px"
             app:layout_constraintStart_toEndOf="@id/user_image"
@@ -61,6 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text=""
+            android:textColor="@color/black"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

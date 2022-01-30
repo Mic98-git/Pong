@@ -6,6 +6,7 @@
     android:id="@+id/user_profile_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     android:orientation="vertical"
     tools:context=".fragments.UserProfileFragment">
 
@@ -14,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:orientation="vertical"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -51,6 +53,7 @@
         android:layout_marginStart="44dp"
         android:layout_marginTop="50dp"
         android:text="Email"
+        android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraint_layout_profile_image" />
@@ -82,6 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Username"
+        android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@id/user_email"
         app:layout_constraintTop_toBottomOf="@id/user_email" />
@@ -106,13 +110,13 @@
         app:layout_constraintStart_toStartOf="@id/username_label"
         app:layout_constraintTop_toBottomOf="@id/username_label"/>
 
-
     <TextView
         android:id="@+id/score_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Total score"
+        android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@id/user_username"
         app:layout_constraintTop_toBottomOf="@id/user_username" />

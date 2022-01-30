@@ -75,4 +75,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     implementation 'androidx.fragment:fragment-ktx:1.4.0'
     implementation 'androidx.activity:activity-ktx:1.2.0-alpha03'
+
+    //Glow Buttons
+    implementation 'com.github.SanojPunchihewa:GlowButton:1.0.1'
 }
