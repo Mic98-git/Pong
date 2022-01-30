@@ -209,5 +209,4 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         super.onBackPressed()
     }
 
-
 }
