@@ -1,6 +1,8 @@
 package com.example.ponggame.fragments
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +16,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.HtmlCompat
 import androidx.navigation.findNavController
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
@@ -25,6 +28,7 @@ class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
+    private lateinit var builder: AlertDialog.Builder
 
     private lateinit var insertedEmail: String
     private lateinit var insertedUsername: String
@@ -50,7 +54,7 @@ class RegisterFragment : Fragment() {
         insertedEmail = constraintLayout
             .findViewById<EditText>(
                 R.id.email_register_edit_text
-            ).text.toString()
+            ).text.toString().filter { !it.isWhitespace() }
         insertedUsername = constraintLayout
             .findViewById<EditText>(
                 R.id.username_register_edit_text
@@ -91,41 +95,52 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.registerConstraintLayout
 
+        builder = AlertDialog.Builder(context)
+        builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>You are registered successfully!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        builder.setMessage("Please check your email address to confirm it")
+        builder.setNegativeButton("Ok",
+            DialogInterface.OnClickListener { dialog, _ ->
+                dialog.dismiss()
+                binding.root.findNavController().navigate(
+                    RegisterFragmentDirections
+                        .actionRegisterFragmentToLoginFragment()
+                )
+            }
+        )
+
         val registerButton = view.findViewById<Button>(R.id.register_button)
         registerButton.setOnClickListener {
             getTypedData()
-            if (insertedEmail.isNotEmpty() && insertedUsername.isNotEmpty() && insertedPassword.isNotEmpty()) {
-                if (!Patterns.EMAIL_ADDRESS.matcher(insertedEmail).matches())
-                    Toast.makeText(
-                        context,
-                        "Please provide a valid email",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                if (insertedPassword.length < 6) {
-                    Toast.makeText(
-                        context,
-                        "Min password should be 6 characters",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                if (!checkPassword(insertedPassword, confirmedPassword)){
-                    Toast.makeText(
-                        context,
-                        "The inserted passwords don't match",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                else {
-                    registerUser()
-                }
+            if (insertedEmail.isNotEmpty() && insertedUsername.isNotEmpty() && insertedPassword.isNotEmpty() && confirmedPassword.isNotEmpty() && checkCredentials()) {
+                registerUser()
             } else {
                 Toast.makeText(
                     context,
-                    "Please insert all the requested data",
+                    "Please check your data",
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
+    }
+
+    private fun checkCredentials(): Boolean {
+        if (!Patterns.EMAIL_ADDRESS.matcher(insertedEmail).matches()) {
+            constraintLayout.findViewById<EditText>(R.id.email_register_edit_text).error =
+                "Please provide a valid email"
+            constraintLayout.findViewById<EditText>(R.id.email_register_edit_text).requestFocus()
+            return false
+        }
+        if (insertedPassword.length < 6) {
+            constraintLayout.findViewById<EditText>(R.id.password_register_edit_text).error = "Min password should be 6 characters"
+            constraintLayout.findViewById<EditText>(R.id.password_register_edit_text).requestFocus()
+            return false
+        }
+        if (!checkPassword(insertedPassword, confirmedPassword)){
+            constraintLayout.findViewById<EditText>(R.id.confirm_password_register_edit_text).error = "The two passwords don't match"
+            constraintLayout.findViewById<EditText>(R.id.confirm_password_register_edit_text).requestFocus()
+            return false
+        }
+        return true
     }
 
     private fun registerUser() {
@@ -136,15 +151,19 @@ class RegisterFragment : Fragment() {
                         .addOnCompleteListener { createUser ->
                             if (createUser.isSuccessful) {
                                 uploadImageToFirebase()
-                                binding.root.findNavController().navigate(
-                                    RegisterFragmentDirections
-                                        .actionRegisterFragmentToLoginFragment()
-                                )
-                                Toast.makeText(
-                                    context,
-                                    "You are registered successfully",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                DatabaseImpl.sendEmailVerification().addOnCompleteListener { emailVerification ->
+                                    if (emailVerification.isSuccessful) {
+                                        val alert = builder.create()
+                                        alert.show()
+                                    }
+                                    else {
+                                        Toast.makeText(
+                                            context,
+                                            emailVerification.exception!!.message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
                             } else {
                                 Toast.makeText(
                                     context,
@@ -154,11 +173,8 @@ class RegisterFragment : Fragment() {
                             }
                         }
                 } else {
-                    Toast.makeText(
-                        context,
-                        "This email is already associated with an account! Log in or use another one",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    constraintLayout.findViewById<EditText>(R.id.email_register_edit_text).error = "This email is already associated with another account!"
+                    constraintLayout.findViewById<EditText>(R.id.email_register_edit_text).requestFocus()
                 }
             }
     }

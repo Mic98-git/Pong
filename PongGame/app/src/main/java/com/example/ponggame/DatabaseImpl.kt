@@ -33,6 +33,14 @@ object DatabaseImpl : Database {
         return getAuthInstance().signInWithEmailAndPassword(email, password)
     }
 
+    override fun resetPassword(email: String): Task<Void> {
+        return getAuthInstance().sendPasswordResetEmail(email)
+    }
+
+    override fun sendEmailVerification(): Task<Void> {
+        return getAuthInstance().currentUser!!.sendEmailVerification()
+    }
+
     override fun registerUser(email : String, password : String): Task<AuthResult> {
         return getAuthInstance().createUserWithEmailAndPassword(email, password)
     }
@@ -97,6 +105,7 @@ object DatabaseImpl : Database {
     override fun deleteUser() {
         getUsersReference().child(getCurrentUserId()).removeValue()
         getReferenceToUsersProfilePictures().child(getCurrentUserId()).delete()
+        getAuthInstance().currentUser!!.delete()
     }
 
 }

@@ -13,10 +13,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
@@ -57,13 +59,14 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        @Suppress("DEPRECATION")
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_pong)
-
         toggleButton = findViewById(R.id.play_pause_button)
         quitButton = findViewById(R.id.quit_game_button)
 
         builder = AlertDialog.Builder(this)
-        builder.setTitle("Quit game")
+        builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Quit game</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
         builder.setMessage("Do you want to quit?")
 
         builder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, which ->

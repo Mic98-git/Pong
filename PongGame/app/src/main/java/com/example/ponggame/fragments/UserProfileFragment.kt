@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.ponggame.DatabaseImpl
@@ -91,8 +92,8 @@ class UserProfileFragment : Fragment() {
         }
 
         // Initialize builder for alert
-        builder = AlertDialog.Builder(this.context!!)
-        builder.setTitle("Attention")
+        builder = AlertDialog.Builder(this.requireContext())
+        builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Attention!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
         builder.setMessage("Username field must be not empty")
         builder.setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()

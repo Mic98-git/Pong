@@ -1,5 +1,7 @@
 package com.example.ponggame.fragments
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
@@ -12,10 +14,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.HtmlCompat
 import androidx.navigation.findNavController
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
 import com.example.ponggame.databinding.FragmentLoginBinding
+import com.sanojpunchihewa.glowbutton.GlowButton
 
 class LoginFragment : Fragment() {
 
@@ -25,12 +29,13 @@ class LoginFragment : Fragment() {
 
     private lateinit var insertedEmail: String
     private lateinit var insertedPassword: String
+    private lateinit var builder: AlertDialog.Builder
 
     private fun getTypedData() {
         insertedEmail = constraintLayout
             .findViewById<EditText>(
                 R.id.username_login_edit_text
-            ).text.toString()
+            ).text.toString().filter { !it.isWhitespace() }
         insertedPassword = constraintLayout
             .findViewById<EditText>(
                 R.id.password_login_edit_text
@@ -51,33 +56,36 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.loginConstraintLayout
-        val loginButton = view.findViewById<Button>(R.id.login_button)
+
+        builder = AlertDialog.Builder(context)
+        builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Email not verified!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        builder.setMessage("Please verify your email address to login")
+        builder.setNegativeButton("Ok",
+            DialogInterface.OnClickListener { dialog, _ ->
+                dialog.dismiss()
+            }
+        )
+
+        val loginButton = view.findViewById<GlowButton>(R.id.login_button)
         loginButton.setOnClickListener {
             getTypedData()
-            if (insertedEmail.isNotEmpty() && insertedPassword.isNotEmpty()) {
-                if (!Patterns.EMAIL_ADDRESS.matcher(insertedEmail).matches())
-                    Toast.makeText(
-                        context,
-                        "Please provide a valid email",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                if (insertedPassword.length < 6) {
-                    Toast.makeText(
-                        context,
-                        "Please insert a valid password with more than 6 char",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                else {
-                    loginUser()
-                }
+            if (insertedEmail.isNotEmpty() && insertedPassword.isNotEmpty() && checkCredentials()) {
+                loginUser()
             } else {
                 Toast.makeText(
                     context,
-                    "Please insert all the requested data",
+                    "Please check your credentials",
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+
+        val forgotPasswordButton = view.findViewById<Button>(R.id.forgot_password_button)
+        forgotPasswordButton.setOnClickListener {
+            view.findNavController().navigate(
+                LoginFragmentDirections
+                    .actionLoginFragmentToForgotPasswordFragment()
+            )
         }
 
         val registerButton = view.findViewById<Button>(R.id.signup_button)
@@ -89,18 +97,44 @@ class LoginFragment : Fragment() {
         }
     }
 
+    private fun checkCredentials(): Boolean {
+        var result = true
+        if (!Patterns.EMAIL_ADDRESS.matcher(insertedEmail).matches()) {
+            constraintLayout.findViewById<EditText>(R.id.username_login_edit_text).error = "Please provide a valid email"
+            constraintLayout.findViewById<EditText>(R.id.username_login_edit_text).requestFocus()
+            result = false
+        }
+        if (insertedPassword.length < 6) {
+            constraintLayout.findViewById<EditText>(R.id.password_login_edit_text).error = "Please insert a valid password with more than 6 character"
+            constraintLayout.findViewById<EditText>(R.id.password_login_edit_text).requestFocus()
+            result = false
+        }
+        /*else if (!Patterns.EMAIL_ADDRESS.matcher(insertedEmail).matches() && insertedPassword.length < 6) {
+            constraintLayout.findViewById<EditText>(R.id.username_login_edit_text).error = "Please provide a valid email"
+            constraintLayout.findViewById<EditText>(R.id.password_login_edit_text).error = "Please insert a valid password with more than 6 char"
+            result = false
+        }*/
+        return result
+    }
+
     private fun loginUser() {
         DatabaseImpl.loginUser(insertedEmail, insertedPassword).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                binding.root.findNavController().navigate(
-                    LoginFragmentDirections
-                        .actionLoginFragmentToMenuFragment()
-                )
-                Toast.makeText(
-                    context,
-                    "You are logged in successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (DatabaseImpl.getAuthInstance().currentUser!!.isEmailVerified) {
+                    binding.root.findNavController().navigate(
+                        LoginFragmentDirections
+                            .actionLoginFragmentToMenuFragment()
+                    )
+                    Toast.makeText(
+                        context,
+                        "You are logged in successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else {
+                    val alert = builder.create()
+                    alert.show()
+                }
             } else {
                 Toast.makeText(
                     context,

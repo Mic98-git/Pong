@@ -5,6 +5,7 @@
     android:id="@+id/login_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     android:orientation="vertical"
     tools:context=".fragments.LoginFragment">
 
@@ -68,37 +69,68 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:id="@+id/forgot_password_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="Forgot password?"
+        android:textColor="@color/purple_700"
+        app:layout_constraintEnd_toEndOf="@+id/password_login"
+        app:layout_constraintTop_toBottomOf="@+id/password_login" />
+
+    <com.sanojpunchihewa.glowbutton.GlowButton
+        android:id="@+id/login_button"
+        android:layout_width="360dp"
+        android:layout_height="55dp"
+        android:text="login"
+        android:layout_centerInParent="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/forgot_password_button"
+        android:layout_marginTop="10dp"
+        app:cornerRadius="50dp"
+        app:buttonColor="@color/purple_500"
+        app:unpressedGlowSize="10dp"
+        app:pressedGlowSize="10dp"
+        app:glowColor="@color/purple_500" />
+
+    <!--
+    <Button
         android:id="@+id/login_button"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:text="Log in"
         app:cornerRadius="24dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/password_login" />
+        app:layout_constraintTop_toBottomOf="@+id/forgot_password_button" />
+        -->
 
     <TextView
         android:id="@+id/not_registered_text"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_width="160dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="22dp"
+        android:gravity="center"
         android:text="Not registered yet?"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/login_button" />
 
     <Button
         android:id="@+id/signup_button"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_width="160dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="176dp"
+        android:layout_marginTop="22dp"
         android:background="@android:color/transparent"
+        android:gravity="center"
         android:text="Sign up"
         android:textColor="@color/purple_700"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/not_registered_text" />
+        app:layout_constraintTop_toBottomOf="@id/login_button" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
