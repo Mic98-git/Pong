@@ -6,7 +6,7 @@
     android:id="@+id/user_profile_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/user_profile"
     android:orientation="vertical"
     tools:context=".fragments.UserProfileFragment">
 
@@ -22,7 +22,7 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_width="160dp"
+            android:layout_width="170dp"
             android:layout_height="160dp"
             android:importantForAccessibility="no"
             android:scaleType="centerCrop"
@@ -106,6 +106,7 @@
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
         android:textSize="18sp"
+        android:textColor="@color/white"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@id/username_label"
         app:layout_constraintTop_toBottomOf="@id/username_label"/>
@@ -131,6 +132,45 @@
         app:layout_constraintStart_toStartOf="@id/score_label"
         app:layout_constraintTop_toBottomOf="@id/score_label" />
 
+    <ImageView
+        android:id="@+id/confirm_update_button"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_score"
+        app:layout_constraintBottom_toTopOf="@id/undo_update_button"
+        app:srcCompat="@drawable/confirm"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <ImageView
+        android:id="@+id/undo_update_button"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/confirm_update_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cancel"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <ImageView
+        android:id="@+id/log_out_button"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/confirm_update_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/logout"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <!--
     <Button
         android:id="@+id/confirm_update_button"
         android:layout_width="250dp"
@@ -165,5 +205,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/confirm_update_button"
         app:layout_constraintBottom_toBottomOf="parent"/>
+    -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

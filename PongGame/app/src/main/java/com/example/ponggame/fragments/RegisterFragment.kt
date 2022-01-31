@@ -29,6 +29,7 @@ class RegisterFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var builder: AlertDialog.Builder
+    private lateinit var registerButton : ImageView
 
     private lateinit var insertedEmail: String
     private lateinit var insertedUsername: String
@@ -95,11 +96,14 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.registerConstraintLayout
 
+        registerButton = view.findViewById(R.id.register_button)
+
         builder = AlertDialog.Builder(context)
         builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>You are registered successfully!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
         builder.setMessage("Please check your email address to confirm it")
         builder.setNegativeButton("Ok",
             DialogInterface.OnClickListener { dialog, _ ->
+                registerButton.alpha = 1.0F
                 dialog.dismiss()
                 binding.root.findNavController().navigate(
                     RegisterFragmentDirections
@@ -108,8 +112,8 @@ class RegisterFragment : Fragment() {
             }
         )
 
-        val registerButton = view.findViewById<Button>(R.id.register_button)
         registerButton.setOnClickListener {
+            registerButton.alpha = 0.5F
             getTypedData()
             if (insertedEmail.isNotEmpty() && insertedUsername.isNotEmpty() && insertedPassword.isNotEmpty() && confirmedPassword.isNotEmpty() && checkCredentials()) {
                 registerUser()
@@ -119,6 +123,7 @@ class RegisterFragment : Fragment() {
                     "Please check your data",
                     Toast.LENGTH_SHORT
                 ).show()
+                registerButton.alpha = 1.0F
             }
         }
     }
@@ -157,6 +162,7 @@ class RegisterFragment : Fragment() {
                                         alert.show()
                                     }
                                     else {
+                                        registerButton.alpha = 1.0F
                                         Toast.makeText(
                                             context,
                                             emailVerification.exception!!.message,
@@ -165,6 +171,7 @@ class RegisterFragment : Fragment() {
                                     }
                                 }
                             } else {
+                                registerButton.alpha = 1.0F
                                 Toast.makeText(
                                     context,
                                     "Failed to create your profile! Try again",
@@ -173,6 +180,7 @@ class RegisterFragment : Fragment() {
                             }
                         }
                 } else {
+                    registerButton.alpha = 1.0F
                     constraintLayout.findViewById<EditText>(R.id.email_register_edit_text).error = "This email is already associated with another account!"
                     constraintLayout.findViewById<EditText>(R.id.email_register_edit_text).requestFocus()
                 }

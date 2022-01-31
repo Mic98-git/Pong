@@ -1,11 +1,14 @@
 package com.example.ponggame
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.nfc.NdefRecord.createUri
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment

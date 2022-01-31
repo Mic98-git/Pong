@@ -39,12 +39,13 @@ class UserProfileFragment : Fragment() {
     private lateinit var userUsername: TextView
     private var editing: Boolean = false
     private lateinit var addImageButton: ImageButton
-    private lateinit var logOutButton: Button
-    private lateinit var undoButton: Button
-    private lateinit var confirmButton: Button
+    private lateinit var logOutButton: ImageView
+    private lateinit var undoButton: ImageView
+    private lateinit var confirmButton: ImageView
     private lateinit var editUsernameButton: ImageButton
 
-    private lateinit var builder: AlertDialog.Builder
+    private lateinit var failedUsernameBuilder: AlertDialog.Builder
+    private lateinit var logoutBuilder: AlertDialog.Builder
     private lateinit var alert: AlertDialog
     private lateinit var toast: Toast
 
@@ -91,14 +92,6 @@ class UserProfileFragment : Fragment() {
                 })
         }
 
-        // Initialize builder for alert
-        builder = AlertDialog.Builder(this.requireContext())
-        builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Attention!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
-        builder.setMessage("Username field must be not empty")
-        builder.setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, which ->
-            dialog.dismiss()
-        })
-
         // Initialize buttons
         addImageButton = view.findViewById(R.id.add_profile_image_button)
         logOutButton = view.findViewById(R.id.log_out_button)
@@ -112,6 +105,29 @@ class UserProfileFragment : Fragment() {
         usernameInputText = view.findViewById(R.id.user_username_input)
         profileImage = view.findViewById(R.id.profile_image)
 
+        // Initialize builder for alert
+        failedUsernameBuilder = AlertDialog.Builder(this.requireContext())
+        failedUsernameBuilder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Attention!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        failedUsernameBuilder.setMessage("Username field must be not empty")
+        failedUsernameBuilder.setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, which ->
+            confirmButton.alpha = 1.0F
+            dialog.dismiss()
+        })
+
+        logoutBuilder = AlertDialog.Builder(this.requireContext())
+        logoutBuilder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Attention!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        logoutBuilder.setMessage("Are you sure you want to log out?")
+        logoutBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, which ->
+            logOutButton.alpha = 1.0F
+            logOut()
+            view.findNavController().navigate(
+                UserProfileFragmentDirections.actionUserProfileFragmentToLoginFragment()
+            )
+        })
+        logoutBuilder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, which ->
+            logOutButton.alpha = 1.0F
+            dialog.dismiss()
+        })
 
         editUsernameButton.setOnClickListener {
             if (!editing) {
@@ -123,6 +139,7 @@ class UserProfileFragment : Fragment() {
         }
 
         confirmButton.setOnClickListener {
+            confirmButton.alpha = 0.5F
             if (editing) {
                 if (!usernameInputText.text.toString().equals("")) {
                     DatabaseImpl.updateUserUsername(usernameInputText.text.toString())
@@ -135,18 +152,21 @@ class UserProfileFragment : Fragment() {
                     )
                     toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
                     toast.show()
+                    confirmButton.alpha = 1.0F
                     editing = false
                 } else {
-                    alert = builder.create()
+                    alert = failedUsernameBuilder.create()
                     alert.show()
                 }
             }
         }
 
         undoButton.setOnClickListener {
+            undoButton.alpha = 0.5F
             editing = false
             editInputVisibilityOff()
             editButtonsVisibilityOff()
+            undoButton.alpha = 1.0F
         }
 
         addImageButton.setOnClickListener {
@@ -158,10 +178,9 @@ class UserProfileFragment : Fragment() {
         }
 
         logOutButton.setOnClickListener {
-            logOut()
-            view.findNavController().navigate(
-                UserProfileFragmentDirections.actionUserProfileFragmentToLoginFragment()
-            )
+            logOutButton.alpha = 0.5F
+            alert = logoutBuilder.create()
+            alert.show()
         }
     }
 

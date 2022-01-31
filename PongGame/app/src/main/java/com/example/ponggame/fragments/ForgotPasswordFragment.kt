@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -26,6 +27,7 @@ class ForgotPasswordFragment : Fragment() {
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var insertedEmail: String
     private lateinit var builder: AlertDialog.Builder
+    private lateinit var restorePassword : ImageView
 
     private fun getTypedData() {
         insertedEmail = constraintLayout
@@ -66,10 +68,13 @@ class ForgotPasswordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.forgotPasswordConstraintLayout
 
+        restorePassword = view.findViewById(R.id.pw_reset)
+
         builder = AlertDialog.Builder(context)
         builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Email sent to your email address!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
         builder.setNegativeButton("Ok",
             DialogInterface.OnClickListener { dialog, _ ->
+                restorePassword.alpha = 1.0F
                 dialog.dismiss()
                 view.findNavController().navigate(
                     ForgotPasswordFragmentDirections.actionForgotPasswordFragmentToLoginFragment()
@@ -77,8 +82,8 @@ class ForgotPasswordFragment : Fragment() {
             }
         )
 
-        val restorePassword = view.findViewById<Button>(R.id.pw_reset)
         restorePassword.setOnClickListener {
+            restorePassword.alpha = 0.5F
             getTypedData()
             if (validateInput()) {
                 DatabaseImpl.resetPassword(insertedEmail).addOnCompleteListener { task ->
@@ -87,14 +92,16 @@ class ForgotPasswordFragment : Fragment() {
                         alert.show()
                     }
                     else {
+                        restorePassword.alpha = 1.0F
                         Toast.makeText(
                             context,
-                            "Error during the procedure. Please, try again!",
+                            "Error during the procedure. There is no account with the inserted email!",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 }
             }
+            restorePassword.alpha = 1.0F
         }
 
         val backToLogin = view.findViewById<Button>(R.id.login_button)

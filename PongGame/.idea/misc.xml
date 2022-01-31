@@ -29,13 +29,13 @@
         <entry key="app/src/main/res/layout/fragment_first.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/layout/fragment_forgot_password.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_game.xml" value="0.24427083333333333" />
-        <entry key="app/src/main/res/layout/fragment_home_page.xml" value="0.625" />
-        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.2909250283957551" />
-        <entry key="app/src/main/res/layout/fragment_menu.xml" value="0.15486725663716813" />
+        <entry key="app/src/main/res/layout/fragment_home_page.xml" value="0.4949238578680203" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_menu.xml" value="0.16146363114888695" />
         <entry key="app/src/main/res/layout/fragment_ranking_list.xml" value="0.13565891472868216" />
-        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_second.xml" value="0.24427083333333333" />
-        <entry key="app/src/main/res/layout/fragment_user_profile.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/fragment_user_profile.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_view.xml" value="0.4073706732855903" />
         <entry key="app/src/main/res/layout/layout_border.xml" value="0.2318840579710145" />
         <entry key="app/src/main/res/layout/text_view_border.xml" value="0.2578125" />

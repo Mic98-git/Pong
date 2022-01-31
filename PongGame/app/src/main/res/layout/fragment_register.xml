@@ -21,7 +21,7 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_width="160dp"
+            android:layout_width="170dp"
             android:layout_height="160dp"
             android:layout_centerInParent="true"
             android:importantForAccessibility="no"
@@ -51,7 +51,7 @@
         android:id="@+id/email_register"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="350dp"
+        android:layout_marginBottom="380dp"
         android:hint="Insert your email"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -118,6 +118,7 @@
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!--
     <Button
         android:id="@+id/register_button"
         android:layout_width="wrap_content"
@@ -128,5 +129,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/confirm_password_register" />
+    -->
+
+    <ImageView
+        android:id="@+id/register_button"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/confirm_password_register"
+        app:srcCompat="@drawable/register"
+        android:clickable="true"
+        android:focusable="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

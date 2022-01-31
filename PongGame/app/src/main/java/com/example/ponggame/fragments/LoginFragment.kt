@@ -5,21 +5,21 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
 import com.example.ponggame.databinding.FragmentLoginBinding
-import com.sanojpunchihewa.glowbutton.GlowButton
 
 class LoginFragment : Fragment() {
 
@@ -30,6 +30,7 @@ class LoginFragment : Fragment() {
     private lateinit var insertedEmail: String
     private lateinit var insertedPassword: String
     private lateinit var builder: AlertDialog.Builder
+    private lateinit var loginButton : ImageView
 
     private fun getTypedData() {
         insertedEmail = constraintLayout
@@ -44,7 +45,7 @@ class LoginFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         Log.d("LoginFragment", "Login Fragment created!")
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
@@ -56,22 +57,24 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.loginConstraintLayout
-
         builder = AlertDialog.Builder(context)
         builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Email not verified!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
         builder.setMessage("Please verify your email address to login")
         builder.setNegativeButton("Ok",
             DialogInterface.OnClickListener { dialog, _ ->
+                loginButton.alpha = 1.0F
                 dialog.dismiss()
             }
         )
 
-        val loginButton = view.findViewById<GlowButton>(R.id.login_button)
+        loginButton = view.findViewById(R.id.login_button)
         loginButton.setOnClickListener {
+            loginButton.alpha = 0.5F
             getTypedData()
             if (insertedEmail.isNotEmpty() && insertedPassword.isNotEmpty() && checkCredentials()) {
                 loginUser()
             } else {
+                loginButton.alpha = 1.0F
                 Toast.makeText(
                     context,
                     "Please check your credentials",
@@ -136,6 +139,7 @@ class LoginFragment : Fragment() {
                     alert.show()
                 }
             } else {
+                loginButton.alpha = 1.0F
                 Toast.makeText(
                     context,
                     "Failed to login! Please check your credentials",

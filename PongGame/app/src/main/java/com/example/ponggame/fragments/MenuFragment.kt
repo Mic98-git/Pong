@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,9 @@ class MenuFragment : Fragment() {
     private var _binding: FragmentMenuBinding? = null
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
+    private lateinit var rankButton: ImageView
+    private lateinit var myProfileButton : ImageView
+    private lateinit var newGameButton: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,26 +64,36 @@ class MenuFragment : Fragment() {
             })
         }
 
-        val rankButton = view.findViewById<Button>(R.id.ranking_list_button)
+        rankButton = view.findViewById(R.id.ranking_list_button)
         rankButton.setOnClickListener {
+            rankButton.alpha = 0.5F
             view.findNavController().navigate(
                 MenuFragmentDirections.actionMenuFragmentToRankingListFragment()
             )
         }
 
-        val myProfileButton = view.findViewById<Button>(R.id.profile_button)
+        myProfileButton = view.findViewById(R.id.profile_button)
         myProfileButton.setOnClickListener {
+            myProfileButton.alpha = 0.5F
             view.findNavController().navigate(
                 MenuFragmentDirections.actionMenuFragmentToUserProfileFragment()
             )
         }
 
-        val newGameButton = view.findViewById<Button>(R.id.new_game_button)
+        newGameButton = view.findViewById(R.id.new_game_button)
         newGameButton.setOnClickListener {
+            newGameButton.alpha = 0.5F
             view.findNavController().navigate(
                 MenuFragmentDirections.actionMenuFragmentToPongActivity()
             )
         }
+    }
+
+    override fun onStart() {
+        newGameButton.alpha = 1.0F
+        rankButton.alpha = 1.0F
+        myProfileButton.alpha = 1.0F
+        super.onStart()
     }
 
     override fun onDestroyView() {
