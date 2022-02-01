@@ -60,7 +60,7 @@ class ForgotPasswordFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentForgotPasswordBinding.inflate(inflater, container, false)
-        setActivityTitle("Password Forgotten")
+        setActivityTitle("Forgotten Password")
         (activity as AppCompatActivity?)!!.supportActionBar?.show()
         return binding.root
     }

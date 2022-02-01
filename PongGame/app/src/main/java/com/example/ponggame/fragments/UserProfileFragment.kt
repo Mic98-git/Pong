@@ -60,7 +60,7 @@ class UserProfileFragment : Fragment() {
     ): View? {
         Log.d("UserProfileFragment", "User profile fragment created!")
         _binding = FragmentUserProfileBinding.inflate(inflater, container, false)
-        setActivityTitle("User Profile")
+        setActivityTitle("My Profile")
         (activity as AppCompatActivity?)!!.supportActionBar?.show()
         return binding.root
     }

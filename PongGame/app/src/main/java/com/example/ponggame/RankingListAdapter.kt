@@ -2,6 +2,7 @@ package com.example.ponggame
 
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,8 @@ class RankingListAdapter(private var users: ArrayList<User>, private var email: 
         DatabaseImpl.getReferenceToUsersProfilePictures().child(user.uid.toString()).getFile(localFile).addOnSuccessListener {
             val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
             holder.image.setImageBitmap(bitmap)
+        }.addOnFailureListener {
+            Log.d("Ranking List", "the requested resource does not exists")
         }
     }
 
