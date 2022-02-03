@@ -2,6 +2,7 @@ package com.example.ponggame.fragments
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Patterns
 import android.view.LayoutInflater
@@ -71,7 +72,14 @@ class ForgotPasswordFragment : Fragment() {
         restorePassword = view.findViewById(R.id.pw_reset)
 
         builder = AlertDialog.Builder(context)
-        builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Email sent to your email address!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES) {
+            builder.setTitle(HtmlCompat.fromHtml("<font color='#ffffff'>Email sent to your email address!</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
+        else {
+            builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Email sent to your email address!</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
         builder.setNegativeButton("Ok",
             DialogInterface.OnClickListener { dialog, _ ->
                 restorePassword.alpha = 1.0F

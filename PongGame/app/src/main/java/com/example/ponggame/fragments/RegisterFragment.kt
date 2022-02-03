@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.util.Patterns
@@ -99,7 +100,14 @@ class RegisterFragment : Fragment() {
         registerButton = view.findViewById(R.id.register_button)
 
         builder = AlertDialog.Builder(context)
-        builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>You are registered successfully!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES) {
+            builder.setTitle(HtmlCompat.fromHtml("<font color='#ffffff'>You are registered successfully!</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
+        else {
+            builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>You are registered successfully!</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
         builder.setMessage("Please check your email address to confirm it")
         builder.setNegativeButton("Ok",
             DialogInterface.OnClickListener { dialog, _ ->

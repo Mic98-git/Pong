@@ -2,6 +2,7 @@ package com.example.ponggame.fragments
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
@@ -58,7 +59,14 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.loginConstraintLayout
         builder = AlertDialog.Builder(context)
-        builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Email not verified!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES) {
+            builder.setTitle(HtmlCompat.fromHtml("<font color='#ffffff'>Email not verified!</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
+        else {
+            builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Email not verified!</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
         builder.setMessage("Please verify your email address to login")
         builder.setNegativeButton("Ok",
             DialogInterface.OnClickListener { dialog, _ ->

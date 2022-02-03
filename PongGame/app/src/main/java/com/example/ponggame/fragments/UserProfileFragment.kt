@@ -3,6 +3,7 @@ package com.example.ponggame.fragments
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -107,7 +108,14 @@ class UserProfileFragment : Fragment() {
 
         // Initialize builder for alert
         failedUsernameBuilder = AlertDialog.Builder(this.requireContext())
-        failedUsernameBuilder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Attention!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES) {
+            failedUsernameBuilder.setTitle(HtmlCompat.fromHtml("<font color='#ffffff'>Attention!</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
+        else {
+            failedUsernameBuilder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Attention!</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
         failedUsernameBuilder.setMessage("Username field must be not empty")
         failedUsernameBuilder.setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, which ->
             confirmButton.alpha = 1.0F
@@ -115,7 +123,14 @@ class UserProfileFragment : Fragment() {
         })
 
         logoutBuilder = AlertDialog.Builder(this.requireContext())
-        logoutBuilder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Attention!</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES) {
+            logoutBuilder.setTitle(HtmlCompat.fromHtml("<font color='#ffffff'>Attention!</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
+        else {
+            logoutBuilder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Attention!</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
         logoutBuilder.setMessage("Are you sure you want to log out?")
         logoutBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, which ->
             logOutButton.alpha = 1.0F

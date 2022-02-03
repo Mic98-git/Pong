@@ -1,9 +1,8 @@
 package com.example.ponggame.game.ui
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.DialogInterface
-import android.graphics.drawable.Drawable
+import android.content.res.Configuration
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -11,7 +10,6 @@ import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
@@ -19,7 +17,6 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
-import androidx.fragment.app.DialogFragment
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
 import com.example.ponggame.game.model.Player
@@ -66,7 +63,13 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         quitButton = findViewById(R.id.quit_game_button)
 
         builder = AlertDialog.Builder(this)
-        builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Quit game</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES) {
+            builder.setTitle(HtmlCompat.fromHtml("<font color='#ffffff'>Quit game</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
+        else {
+            builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Quit game</font>",
+                HtmlCompat.FROM_HTML_MODE_LEGACY))
+        }
         builder.setMessage("Do you want to quit?")
 
         builder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, which ->
