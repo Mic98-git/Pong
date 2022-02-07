@@ -162,6 +162,18 @@
         android:focusable="true" />
 
     <ImageView
+        android:id="@+id/delete_account_button"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_score"
+        app:layout_constraintBottom_toTopOf="@id/undo_update_button"
+        app:srcCompat="@drawable/delete_account"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <ImageView
         android:id="@+id/log_out_button"
         android:layout_width="200dp"
         android:layout_height="60dp"
@@ -173,41 +185,5 @@
         android:clickable="true"
         android:focusable="true" />
 
-    <!--
-    <Button
-        android:id="@+id/confirm_update_button"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:text="Confirm"
-        android:visibility="invisible"
-        app:cornerRadius="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_score"
-        app:layout_constraintBottom_toTopOf="@id/undo_update_button"/>
-
-    <Button
-        android:id="@+id/undo_update_button"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:visibility="invisible"
-        app:cornerRadius="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/confirm_update_button"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <Button
-        android:id="@+id/log_out_button"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:text="Log out"
-        app:cornerRadius="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/confirm_update_button"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-    -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

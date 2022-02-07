@@ -26,6 +26,7 @@
         <entry key="app/src/main/res/layout/content_game.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/layout/fade_in.xml" value="0.1921875" />
         <entry key="app/src/main/res/layout/fade_out.xml" value="0.1921875" />
+        <entry key="app/src/main/res/layout/fragment_account_deleted.xml" value="0.25885416666666666" />
         <entry key="app/src/main/res/layout/fragment_first.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/layout/fragment_forgot_password.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_game.xml" value="0.24427083333333333" />

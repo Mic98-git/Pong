@@ -86,9 +86,21 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/nav_graph.xml"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_userProfileFragment_to_accountDeletedFragment"
+            app:destination="@id/accountDeletedFragment" />
     </fragment>
     <activity
         android:id="@+id/pongActivity"
         android:name="com.example.ponggame.game.ui.PongActivity"
         android:label="PongActivity" />
+    <fragment
+        android:id="@+id/accountDeletedFragment"
+        android:name="com.example.ponggame.fragments.AccountDeletedFragment"
+        android:label="fragment_account_deleted"
+        tools:layout="@layout/fragment_account_deleted" >
+        <action
+            android:id="@+id/action_accountDeletedFragment_to_HomePageFragment"
+            app:destination="@id/HomePageFragment" />
+    </fragment>
 </navigation>

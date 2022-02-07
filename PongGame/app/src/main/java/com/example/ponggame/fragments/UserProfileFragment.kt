@@ -44,9 +44,11 @@ class UserProfileFragment : Fragment() {
     private lateinit var undoButton: ImageView
     private lateinit var confirmButton: ImageView
     private lateinit var editUsernameButton: ImageButton
+    private lateinit var deleteAccountButton: ImageView
 
     private lateinit var failedUsernameBuilder: AlertDialog.Builder
     private lateinit var logoutBuilder: AlertDialog.Builder
+    private lateinit var deleteAccountBuilder: AlertDialog.Builder
     private lateinit var alert: AlertDialog
     private lateinit var toast: Toast
 
@@ -99,6 +101,7 @@ class UserProfileFragment : Fragment() {
         undoButton = view.findViewById(R.id.undo_update_button)
         confirmButton = view.findViewById(R.id.confirm_update_button)
         editUsernameButton = view.findViewById(R.id.edit_username_button)
+        deleteAccountButton = view.findViewById(R.id.delete_account_button)
 
 
         // Handling edit text and image
@@ -108,29 +111,17 @@ class UserProfileFragment : Fragment() {
 
         // Initialize builder for alert
         failedUsernameBuilder = AlertDialog.Builder(this.requireContext())
-        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES) {
-            failedUsernameBuilder.setTitle(HtmlCompat.fromHtml("<font color='#ffffff'>Attention!</font>",
-                HtmlCompat.FROM_HTML_MODE_LEGACY))
-        }
-        else {
-            failedUsernameBuilder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Attention!</font>",
-                HtmlCompat.FROM_HTML_MODE_LEGACY))
-        }
+        setWhiteTitleForAlert(failedUsernameBuilder, "Attention!")
         failedUsernameBuilder.setMessage("Username field must be not empty")
-        failedUsernameBuilder.setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, which ->
-            confirmButton.alpha = 1.0F
-            dialog.dismiss()
-        })
+        failedUsernameBuilder.setPositiveButton(
+            "Ok",
+            DialogInterface.OnClickListener { dialog, which ->
+                confirmButton.alpha = 1.0F
+                dialog.dismiss()
+            })
 
         logoutBuilder = AlertDialog.Builder(this.requireContext())
-        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES) {
-            logoutBuilder.setTitle(HtmlCompat.fromHtml("<font color='#ffffff'>Attention!</font>",
-                HtmlCompat.FROM_HTML_MODE_LEGACY))
-        }
-        else {
-            logoutBuilder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Attention!</font>",
-                HtmlCompat.FROM_HTML_MODE_LEGACY))
-        }
+        setWhiteTitleForAlert(logoutBuilder, "Attention!")
         logoutBuilder.setMessage("Are you sure you want to log out?")
         logoutBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, which ->
             logOutButton.alpha = 1.0F
@@ -141,6 +132,23 @@ class UserProfileFragment : Fragment() {
         })
         logoutBuilder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, which ->
             logOutButton.alpha = 1.0F
+            dialog.dismiss()
+        })
+
+        deleteAccountBuilder = AlertDialog.Builder(this.requireContext())
+        setWhiteTitleForAlert(deleteAccountBuilder, "Deleting account")
+        deleteAccountBuilder.setMessage(
+            "Do you really want to proceed?\nAll saved data will be erased."
+        )
+        deleteAccountBuilder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, which ->
+            deleteAccountButton.alpha = 1.0F
+            view.findNavController().navigate(
+                UserProfileFragmentDirections.actionUserProfileFragmentToAccountDeletedFragment()
+            )
+            DatabaseImpl.deleteUser()
+        })
+        deleteAccountBuilder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, which ->
+            deleteAccountButton.alpha = 1.0F
             dialog.dismiss()
         })
 
@@ -197,6 +205,12 @@ class UserProfileFragment : Fragment() {
             alert = logoutBuilder.create()
             alert.show()
         }
+
+        deleteAccountButton.setOnClickListener {
+            deleteAccountButton.alpha = 0.5F
+            alert = deleteAccountBuilder.create()
+            alert.show()
+        }
     }
 
     override fun onDestroyView() {
@@ -241,6 +255,7 @@ class UserProfileFragment : Fragment() {
     private fun editButtonsVisibilityOn() {
         editUsernameButton.visibility = View.INVISIBLE
         logOutButton.visibility = View.INVISIBLE
+        deleteAccountButton.visibility = View.INVISIBLE
         undoButton.visibility = View.VISIBLE
         confirmButton.visibility = View.VISIBLE
     }
@@ -248,6 +263,7 @@ class UserProfileFragment : Fragment() {
     private fun editButtonsVisibilityOff() {
         editUsernameButton.visibility = View.VISIBLE
         logOutButton.visibility = View.VISIBLE
+        deleteAccountButton.visibility = View.VISIBLE
         undoButton.visibility = View.INVISIBLE
         confirmButton.visibility = View.INVISIBLE
     }
@@ -265,5 +281,26 @@ class UserProfileFragment : Fragment() {
                 }
             }
         }
+
+    private fun setWhiteTitleForAlert(builder: AlertDialog.Builder, title: String) {
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            ===
+            Configuration.UI_MODE_NIGHT_YES
+        ) {
+            builder.setTitle(
+                HtmlCompat.fromHtml(
+                    "<font color='#ffffff'>${title}</font>",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+            )
+        } else {
+            builder.setTitle(
+                HtmlCompat.fromHtml(
+                    "<font color='#000000'>${title}</font>",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+            )
+        }
+    }
 
 }
