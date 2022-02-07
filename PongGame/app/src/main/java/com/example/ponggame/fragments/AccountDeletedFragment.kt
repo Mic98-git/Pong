@@ -64,6 +64,7 @@ class AccountDeletedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Thread.sleep(1000)
         alert = goodByeBuilder.create()
+        alert.setCancelable(false)
         alert.show()
     }
 
