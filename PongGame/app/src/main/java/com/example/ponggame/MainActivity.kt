@@ -1,6 +1,8 @@
 package com.example.ponggame
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import android.net.Uri
 import android.nfc.NdefRecord.createUri
@@ -24,7 +26,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         @Suppress("DEPRECATION")
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val navHostFragment = supportFragmentManager
@@ -34,13 +39,16 @@ class MainActivity : AppCompatActivity() {
         // This ensures action bar (app bar) buttons, like the
         // menu option in LetterListFragment are visible.
         setupActionBarWithNavController(navController)
+        supportActionBar!!.setBackgroundDrawable(
+            ColorDrawable(Color.parseColor("#9243FF"))
+        )
 
         mediaUri = MediaPlayer.create(this, R.raw.main_theme)
         mediaUri.isLooping
     }
 
     override fun onRestart() {
-        if(!isPlaying){
+        if (!isPlaying) {
             mediaUri = MediaPlayer.create(this, R.raw.main_theme)
             mediaUri.isLooping
         }
@@ -49,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
-        if(!isPlaying){
+        if (!isPlaying) {
             mediaUri.start()
             isPlaying = true
         }
@@ -63,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        if(isPlaying){
+        if (isPlaying) {
             mediaUri.stop()
             isPlaying = false
         }
