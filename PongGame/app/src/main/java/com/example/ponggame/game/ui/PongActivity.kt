@@ -24,6 +24,7 @@ import com.example.ponggame.game.model.PongTable
 import com.example.ponggame.game.utils.GameThread
 import com.example.ponggame.game.utils.STATE_PAUSED
 import com.example.ponggame.game.utils.STATE_RUNNING
+import kotlin.math.abs
 import kotlin.math.pow
 
 class PongActivity : AppCompatActivity(), SensorEventListener {
@@ -33,14 +34,16 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var table: PongTable
     private lateinit var player: Player
     private var dx: Float = 0f
+    private var racquetVelocity: Float = 0f
+    private var racquetPos: Float = 0f
+    private var tableWidth: Int = 0
 
     // Sensor elements
     private lateinit var sensorManager: SensorManager
     private lateinit var accelSensor: Sensor
-    var currentTime: Long = 0
-    var previousTime: Long = 0
-    var currentAcceleration: Float = 0f
-    var previousAcceleration: Float = 0f
+    private var currentTime: Long = 0
+    private var deltaTime: Long = 0
+    private var currentAcceleration: Float = 0f
 
     // Variables to handle buttons
     private lateinit var toggleButton: ToggleButton
@@ -57,18 +60,29 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         @Suppress("DEPRECATION")
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         setContentView(R.layout.activity_pong)
         toggleButton = findViewById(R.id.play_pause_button)
         quitButton = findViewById(R.id.quit_game_button)
 
         builder = AlertDialog.Builder(this)
         if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES) {
-            builder.setTitle(HtmlCompat.fromHtml("<font color='#ffffff'>Quit game</font>", HtmlCompat.FROM_HTML_MODE_LEGACY))
-        }
-        else {
-            builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>Quit game</font>",
-                HtmlCompat.FROM_HTML_MODE_LEGACY))
+            builder.setTitle(
+                HtmlCompat.fromHtml(
+                    "<font color='#ffffff'>Quit game</font>",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+            )
+        } else {
+            builder.setTitle(
+                HtmlCompat.fromHtml(
+                    "<font color='#000000'>Quit game</font>",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+            )
         }
         builder.setMessage("Do you want to quit?")
 
@@ -85,7 +99,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
             onBackPressed()
         })
 
-        
+
         //playPauseHandler(it)
         toggleButton.setOnClickListener {
             if (!flag) {
@@ -127,6 +141,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         table.setStatus(findViewById<View>(R.id.tvStatus) as TextView)
 
         mGameThread = table.game
+        tableWidth = table.getTableWidth()
 
         // Start song
         mediaUri = MediaPlayer.create(this, R.raw.pong_theme)
@@ -136,7 +151,12 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
-        sensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL)
+        sensorManager.registerListener(
+            this,
+            accelSensor,
+            SensorManager.SENSOR_DELAY_FASTEST,
+            SensorManager.SENSOR_STATUS_ACCURACY_HIGH
+        )
     }
 
     /**
@@ -147,14 +167,14 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         player = table.player!!
         // >0 goes to left
         this.currentAcceleration = sensorEvent.values[0]
+        this.deltaTime = sensorEvent.timestamp - this.currentTime
         this.currentTime = sensorEvent.timestamp
-
 
         if (this.mGameThread?.getIntState() == STATE_RUNNING) {
             this.table.movePlayerRacquet(
                 -computeDx(
-                    this.currentAcceleration, this.currentTime
-                ) / 899990000000000, // 12 zeroes
+                    this.currentAcceleration, this.deltaTime.toFloat()
+                ) * 3500,
                 player
             )
         }
@@ -166,24 +186,35 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
-    fun nanosecToSec(nanoseconds: Long): Float {
-        return (nanoseconds / 1000000).toFloat()
+    fun nanosecToSec(nanoseconds: Float): Float {
+        return (nanoseconds / 1000000000)
     }
 
-    fun computeDx(currentAcc: Float, currentT: Long): Float {
-        dx = currentAcc * nanosecToSec(currentT).pow(2) -
-                previousAcceleration * nanosecToSec(previousTime).pow(2)
-        this.previousAcceleration = currentAcc
-        this.previousTime = currentT
+    fun computeDx(currentAcc: Float, currentT: Float): Float {
+        val dt = nanosecToSec(currentT)
+        if(racquetPos <= 0 || racquetPos >= tableWidth) {
+            if ((currentAcc > 0 && racquetVelocity < 0) || (currentAcc < 0 && racquetVelocity > 0)) {
+                racquetVelocity = 0f
+            }
+        }
+        dx = (0.5f * currentAcc * dt.pow(2)) + (dt * racquetVelocity)
+
+        //Log.d("PongActivity", "Current dx=${dx}")
+        //Log.d("PongActivity", "Current racquet velocity =${racquetVelocity}")
+        dx -= racquetPos
+        racquetPos = dx
+        racquetVelocity += currentAcc * dt
         return dx
     }
+
+
 
     override fun onDestroy() {
         super.onDestroy()
     }
 
     override fun onRestart() {
-        if(!isPlaying){
+        if (!isPlaying) {
             mediaUri = MediaPlayer.create(this, R.raw.main_theme)
             mediaUri.isLooping
         }
@@ -192,7 +223,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onStart() {
-        if(!isPlaying){
+        if (!isPlaying) {
             mediaUri.start()
             isPlaying = true
         }
@@ -201,7 +232,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onPause() {
-        if(isPlaying){
+        if (isPlaying) {
             mediaUri.stop()
             isPlaying = false
         }

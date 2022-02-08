@@ -50,6 +50,9 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
     // Handle sound effect
     private lateinit var mediaUri: MediaPlayer
 
+    fun getTableWidth(): Int {
+        return this.mTableWidth
+    }
 
     fun getBall(): Ball? {
         return this.ball
