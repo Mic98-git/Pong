@@ -396,9 +396,7 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
             this.userScore++
             // Opponent scored
         } else if (value == 2) {
-            if(this.userScore > 0) {
-                this.userScore--
-            }
+            this.userScore--
         }
     }
 

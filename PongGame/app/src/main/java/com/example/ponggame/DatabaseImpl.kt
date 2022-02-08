@@ -78,7 +78,14 @@ object DatabaseImpl : Database {
         getUsersReference().child(getCurrentUserId()).child("score").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val score = (snapshot.value as Long).toInt()
-                getUsersReference().child(getCurrentUserId()).child("score").setValue(score.plus(update))
+                if (score.plus(update) > 0) {
+                    getUsersReference().child(getCurrentUserId()).child("score")
+                        .setValue(score.plus(update))
+                }
+                else {
+                    getUsersReference().child(getCurrentUserId()).child("score")
+                        .setValue(0)
+                }
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.d("DatabaseImpl", "Error setting current user data")

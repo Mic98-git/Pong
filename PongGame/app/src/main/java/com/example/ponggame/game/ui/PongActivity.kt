@@ -192,13 +192,11 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
 
     fun computeDx(currentAcc: Float, currentT: Float): Float {
         val dt = nanosecToSec(currentT)
-        if(racquetPos <= 0 || racquetPos >= tableWidth) {
-            if ((currentAcc > 0 && racquetVelocity < 0) || (currentAcc < 0 && racquetVelocity > 0)) {
-                racquetVelocity = 0f
-            }
+        //if(racquetPos <= 0 || racquetPos >= tableWidth) {
+        if ((currentAcc > 0 && racquetVelocity < 0) || (currentAcc < 0 && racquetVelocity > 0)) {
+            racquetVelocity = 0f
         }
         dx = (0.5f * currentAcc * dt.pow(2)) + (dt * racquetVelocity)
-
         //Log.d("PongActivity", "Current dx=${dx}")
         //Log.d("PongActivity", "Current racquet velocity =${racquetVelocity}")
         dx -= racquetPos
