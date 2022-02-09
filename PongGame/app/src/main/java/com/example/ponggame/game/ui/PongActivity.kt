@@ -24,6 +24,10 @@ import com.example.ponggame.game.model.PongTable
 import com.example.ponggame.game.utils.GameThread
 import com.example.ponggame.game.utils.STATE_PAUSED
 import com.example.ponggame.game.utils.STATE_RUNNING
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.pow
 
@@ -195,6 +199,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         //if(racquetPos <= 0 || racquetPos >= tableWidth) {
         if ((currentAcc > 0 && racquetVelocity < 0) || (currentAcc < 0 && racquetVelocity > 0)) {
             racquetVelocity = 0f
+            racquetPos = 0f
         }
         dx = (0.5f * currentAcc * dt.pow(2)) + (dt * racquetVelocity)
         //Log.d("PongActivity", "Current dx=${dx}")
@@ -204,7 +209,6 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         racquetVelocity += currentAcc * dt
         return dx
     }
-
 
 
     override fun onDestroy() {
@@ -240,8 +244,10 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onBackPressed() {
-        DatabaseImpl.updateUserScore(this.table.getUserScore())
+        CoroutineScope(Job()).launch(Dispatchers.IO) {
+            DatabaseImpl.updateUserScore(table.getUserScore())
+        }
         super.onBackPressed()
+        //DatabaseImpl.updateUserScore(this.table.getUserScore())
     }
-
 }
