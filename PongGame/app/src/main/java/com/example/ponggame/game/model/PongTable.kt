@@ -170,6 +170,7 @@ class PongTable : SurfaceView, SurfaceHolder.Callback {
         initPongTable(context, attrs)
     }
 
+
     override fun surfaceCreated(surfaceHolder: SurfaceHolder) {
         game!!.setRunning(true)
         game!!.start()

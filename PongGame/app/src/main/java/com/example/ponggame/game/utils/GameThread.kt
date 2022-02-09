@@ -132,5 +132,9 @@ class GameThread(
         mScoreHandler.sendMessage(msg)
     }
 
+    fun getContex(): Context{
+        return this.mCtx
+    }
+
 
 }

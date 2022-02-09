@@ -9,6 +9,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -219,6 +220,7 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
         if (!isPlaying) {
             mediaUri = MediaPlayer.create(this, R.raw.main_theme)
             mediaUri.isLooping
+            onBackPressed()
         }
         Log.d("PongActivity", "On Restart launched!")
         super.onRestart()
