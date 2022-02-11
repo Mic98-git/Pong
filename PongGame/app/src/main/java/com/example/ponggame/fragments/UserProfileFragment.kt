@@ -23,11 +23,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
+import com.example.ponggame.RetrofitClient
 import com.example.ponggame.databinding.FragmentUserProfileBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.*
+import retrofit2.HttpException
 import java.io.File
 
 class UserProfileFragment : Fragment() {
@@ -59,7 +62,7 @@ class UserProfileFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         Log.d("UserProfileFragment", "User profile fragment created!")
         _binding = FragmentUserProfileBinding.inflate(inflater, container, false)
@@ -70,9 +73,33 @@ class UserProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.constraintLayoutProfileImage
-        setProfilePicture()
+        //setProfilePicture()
 
-        if (DatabaseImpl.getCurrentUserId().isNotEmpty()) {
+        val scope = CoroutineScope(Job())
+        scope.launch(Dispatchers.Main) {
+            var username = "null"
+            var email = "null"
+            var score = 0
+            val localFile = File.createTempFile("tempImage", "")
+            withContext(Dispatchers.IO) {
+                val currentUser = RetrofitClient.instance.currentUser()
+                if (currentUser.uid!!.isNotEmpty()) {
+                    val user = RetrofitClient.instance.getUser(currentUser.uid)
+                    username = user.username!!
+                    email = user.email!!
+                    score = user.score!!
+                    DatabaseImpl.getProfilePicture(localFile, currentUser.uid).addOnSuccessListener {
+                        val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                        profileImage.setImageBitmap(bitmap)
+                    }
+                }
+            }
+            view.findViewById<TextView>(R.id.user_email).text = email
+            view.findViewById<TextView>(R.id.user_username).text = username
+            view.findViewById<TextView>(R.id.user_score).text = score.toString()
+        }
+
+        /*if (DatabaseImpl.getCurrentUserId().isNotEmpty()) {
             DatabaseImpl.getUsersReference().child(DatabaseImpl.getCurrentUserId())
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -93,7 +120,7 @@ class UserProfileFragment : Fragment() {
                         toast.show()
                     }
                 })
-        }
+        }*/
 
         // Initialize buttons
         addImageButton = view.findViewById(R.id.add_profile_image_button)
@@ -114,8 +141,7 @@ class UserProfileFragment : Fragment() {
         setWhiteTitleForAlert(failedUsernameBuilder, "Attention!")
         failedUsernameBuilder.setMessage("Username field must be not empty")
         failedUsernameBuilder.setPositiveButton(
-            "Ok",
-            DialogInterface.OnClickListener { dialog, which ->
+            "Ok", DialogInterface.OnClickListener { dialog, which ->
                 confirmButton.alpha = 1.0F
                 dialog.dismiss()
             })
@@ -165,7 +191,32 @@ class UserProfileFragment : Fragment() {
             confirmButton.alpha = 0.5F
             if (editing) {
                 if (!usernameInputText.text.toString().equals("")) {
-                    DatabaseImpl.updateUserUsername(usernameInputText.text.toString())
+                    scope.launch(Dispatchers.Main) {
+                        var updated: Boolean
+                        val currentUser = RetrofitClient.instance.currentUser()
+                        if (currentUser.uid!!.isNotEmpty()) {
+                            withContext(Dispatchers.IO) {
+                                updated = try {
+                                    RetrofitClient.instance.updateUserUsername(currentUser.uid,
+                                        usernameInputText.text.toString())
+                                    true
+                                } catch (response: HttpException) {
+                                    false
+                                }
+                            }
+                            if (updated) {
+                                view.findViewById<TextView>(R.id.user_username).text = usernameInputText.text.toString()
+                            }
+                            else {
+                                Toast.makeText(
+                                    context,
+                                    "Error during the update. Please retry!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                        //DatabaseImpl.updateUserUsername(usernameInputText.text.toString())
+                    }
                     editInputVisibilityOff()
                     editButtonsVisibilityOff()
                     toast = Toast.makeText(
@@ -234,13 +285,13 @@ class UserProfileFragment : Fragment() {
         ).show()
     }
 
-    private fun setProfilePicture() {
+    /*private fun setProfilePicture() {
         val localFile = File.createTempFile("tempImage", "")
         DatabaseImpl.getProfilePicture(localFile).addOnSuccessListener {
             val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
             profileImage.setImageBitmap(bitmap)
         }
-    }
+    }*/
 
     private fun editInputTextVisibilityOn() {
         userUsername.visibility = View.INVISIBLE

@@ -11,16 +11,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.RankingListAdapter
+import com.example.ponggame.RetrofitClient
 import com.example.ponggame.User
 import com.example.ponggame.databinding.FragmentRankingListBinding
-import com.google.firebase.database.*
+import kotlinx.coroutines.*
+import retrofit2.HttpException
 
 
 class RankingListFragment : Fragment() {
     private var _binding: FragmentRankingListBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
-    private val currentUserEmail : String = DatabaseImpl.getAuthInstance().currentUser?.email.toString()
+    private val currentUserEmail: String =
+        DatabaseImpl.getAuthInstance().currentUser?.email.toString()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +33,7 @@ class RankingListFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentRankingListBinding.inflate(inflater, container, false)
         val view = binding.root
@@ -45,7 +49,37 @@ class RankingListFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.adapter = rankingListAdapter
+        CoroutineScope(Job()).launch(Dispatchers.Main) {
+            showRankingList(rankingListAdapter)
+        }
+    }
 
+    private suspend fun showRankingList(rankingListAdapter: RankingListAdapter) {
+        var usersRetrieved: Boolean
+        var rankingList: HashMap<String, User> = HashMap()
+        withContext(Dispatchers.IO) {
+            usersRetrieved = try {
+                rankingList = RetrofitClient.instance.getUsersList()
+                true
+            } catch (exception: HttpException){
+                false
+            }
+        }
+        if (usersRetrieved) {
+            for ((uid, user) in rankingList) {
+                rankingListAdapter.addItem(user)
+            }
+        }
+        else {
+            Toast.makeText(
+                context,
+                "Error retrieving ranking list",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+    }
+    /*
         DatabaseImpl.getUsersReference().addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (data: DataSnapshot in snapshot.children) {
@@ -59,9 +93,7 @@ class RankingListFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        })
-
-    }
+        })*/
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -71,12 +103,11 @@ class RankingListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // handle the up button here
         return NavigationUI.onNavDestinationSelected(item,
-            view!!.findNavController())
+            requireView().findNavController())
                 || super.onOptionsItemSelected(item)
     }
 
-    private fun Fragment.setActivityTitle(title: String)
-    {
+    private fun Fragment.setActivityTitle(title: String) {
         (activity as AppCompatActivity?)!!.supportActionBar?.title = title
     }
 

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,8 +22,15 @@ import androidx.core.text.HtmlCompat
 import androidx.navigation.findNavController
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
+import com.example.ponggame.RetrofitClient
+import com.example.ponggame.User
 import com.example.ponggame.databinding.FragmentRegisterBinding
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.HttpException
+import retrofit2.Response
 
 class RegisterFragment : Fragment() {
 
@@ -30,8 +38,9 @@ class RegisterFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var builder: AlertDialog.Builder
-    private lateinit var registerButton : ImageView
+    private lateinit var registerButton: ImageView
 
+    private lateinit var uid: String
     private lateinit var insertedEmail: String
     private lateinit var insertedUsername: String
     private lateinit var insertedPassword: String
@@ -40,17 +49,18 @@ class RegisterFragment : Fragment() {
     private lateinit var profileUri: Uri
     private var imageSelected: Boolean = false
 
-    private val selectImageFromGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val res: Intent? = result.data
-            if (res != null) run {
-                profileUri = res.data!!
-                profileImage = binding.root.findViewById(R.id.profile_image)
-                profileImage.setImageURI(profileUri)
-                imageSelected = true
+    private val selectImageFromGallery =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val res: Intent? = result.data
+                if (res != null) run {
+                    profileUri = res.data!!
+                    profileImage = binding.root.findViewById(R.id.profile_image)
+                    profileImage.setImageURI(profileUri)
+                    imageSelected = true
+                }
             }
         }
-    }
 
     private fun getTypedData() {
         insertedEmail = constraintLayout
@@ -72,18 +82,19 @@ class RegisterFragment : Fragment() {
     }
 
     private fun checkPassword(str1: String, str2: String): Boolean {
-        return str1==str2
+        return str1 == str2
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         setActivityTitle("Register")
         (activity as AppCompatActivity?)!!.supportActionBar?.show()
 
-        val selectImageButton = binding.root.findViewById<ImageButton>(R.id.add_profile_image_button)
+        val selectImageButton =
+            binding.root.findViewById<ImageButton>(R.id.add_profile_image_button)
         selectImageButton.setOnClickListener {
             val intent = Intent()
             intent.type = "image/*"
@@ -103,8 +114,7 @@ class RegisterFragment : Fragment() {
         if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK === Configuration.UI_MODE_NIGHT_YES) {
             builder.setTitle(HtmlCompat.fromHtml("<font color='#ffffff'>You are registered successfully!</font>",
                 HtmlCompat.FROM_HTML_MODE_LEGACY))
-        }
-        else {
+        } else {
             builder.setTitle(HtmlCompat.fromHtml("<font color='#000000'>You are registered successfully!</font>",
                 HtmlCompat.FROM_HTML_MODE_LEGACY))
         }
@@ -124,7 +134,9 @@ class RegisterFragment : Fragment() {
             registerButton.alpha = 0.5F
             getTypedData()
             if (insertedEmail.isNotEmpty() && insertedUsername.isNotEmpty() && insertedPassword.isNotEmpty() && confirmedPassword.isNotEmpty() && checkCredentials()) {
-                registerUser()
+                CoroutineScope(Job()).launch(Dispatchers.Main) {
+                    registerUser()
+                }
             } else {
                 Toast.makeText(
                     context,
@@ -144,19 +156,49 @@ class RegisterFragment : Fragment() {
             return false
         }
         if (insertedPassword.length < 6) {
-            constraintLayout.findViewById<EditText>(R.id.password_register_edit_text).error = "Min password should be 6 characters"
+            constraintLayout.findViewById<EditText>(R.id.password_register_edit_text).error =
+                "Min password should be 6 characters"
             constraintLayout.findViewById<EditText>(R.id.password_register_edit_text).requestFocus()
             return false
         }
-        if (!checkPassword(insertedPassword, confirmedPassword)){
-            constraintLayout.findViewById<EditText>(R.id.confirm_password_register_edit_text).error = "The two passwords don't match"
-            constraintLayout.findViewById<EditText>(R.id.confirm_password_register_edit_text).requestFocus()
+        if (!checkPassword(insertedPassword, confirmedPassword)) {
+            constraintLayout.findViewById<EditText>(R.id.confirm_password_register_edit_text).error =
+                "The two passwords don't match"
+            constraintLayout.findViewById<EditText>(R.id.confirm_password_register_edit_text)
+                .requestFocus()
             return false
         }
         return true
     }
 
-    private fun registerUser() {
+    private suspend fun registerUser() {
+        try {
+            val user = RetrofitClient.instance.registerUser(insertedEmail, insertedPassword)
+            uploadImageToFirebase()
+            if (user.uid!!.isNotEmpty()) {
+                try {
+                    RetrofitClient.instance.createUser(user.uid, insertedEmail, insertedUsername, 0)
+                    val alert = builder.create()
+                    alert.show()
+                }
+                catch (response: HttpException) {
+                    registerButton.alpha = 1.0F
+                    Toast.makeText(
+                        context,
+                        "Failed to create your profile! Try again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+        catch (response: HttpException) {
+            registerButton.alpha = 1.0F
+            constraintLayout.findViewById<EditText>(R.id.email_register_edit_text).error = "This email is already associated with another account!"
+            constraintLayout.findViewById<EditText>(R.id.email_register_edit_text).requestFocus()
+        }
+    }
+
+    /*private fun registerUser() {
         DatabaseImpl.registerUser(insertedEmail, insertedPassword)
             .addOnCompleteListener { registration ->
                 if (registration.isSuccessful) {
@@ -193,7 +235,7 @@ class RegisterFragment : Fragment() {
                     constraintLayout.findViewById<EditText>(R.id.email_register_edit_text).requestFocus()
                 }
             }
-    }
+    }*/
 
     private fun uploadImageToFirebase() {
         if (imageSelected) {
@@ -206,3 +248,20 @@ class RegisterFragment : Fragment() {
     }
 
 }
+
+/*
+            .enqueue(object: Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        // When data is available, populate LiveData
+                        response.body()
+                    }
+                }
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Toast.makeText(
+                        context,
+                        t.printStackTrace().toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })*/

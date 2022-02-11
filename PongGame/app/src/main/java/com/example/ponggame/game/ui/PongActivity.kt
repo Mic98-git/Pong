@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
+import com.example.ponggame.RetrofitClient
 import com.example.ponggame.game.model.Player
 import com.example.ponggame.game.model.PongTable
 import com.example.ponggame.game.utils.GameThread
@@ -246,10 +247,18 @@ class PongActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onBackPressed() {
+        sensorManager.unregisterListener(this)
+        CoroutineScope(Job()).launch(Dispatchers.IO) {
+            val currentUser = RetrofitClient.instance.currentUser()
+            if (currentUser.uid!!.isNotEmpty()) {
+                RetrofitClient.instance.updateUserScore(currentUser.uid, table.getUserScore())
+            }
+        }
+        super.onBackPressed()
+        /*
         CoroutineScope(Job()).launch(Dispatchers.IO) {
             DatabaseImpl.updateUserScore(table.getUserScore())
         }
-        super.onBackPressed()
-        //DatabaseImpl.updateUserScore(this.table.getUserScore())
+        */
     }
 }

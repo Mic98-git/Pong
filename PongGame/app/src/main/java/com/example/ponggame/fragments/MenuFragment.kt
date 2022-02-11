@@ -1,5 +1,6 @@
 package com.example.ponggame.fragments
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -16,9 +17,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import com.example.ponggame.DatabaseImpl
 import com.example.ponggame.R
+import com.example.ponggame.RetrofitClient
 import com.example.ponggame.databinding.FragmentMenuBinding
 import com.google.firebase.database.*
+import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.*
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
 
 
 class MenuFragment : Fragment() {
@@ -26,12 +32,13 @@ class MenuFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var rankButton: ImageView
-    private lateinit var myProfileButton : ImageView
+    private lateinit var myProfileButton: ImageView
     private lateinit var newGameButton: ImageView
+    private lateinit var profileImage: CircleImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         Log.d("MenuFragment", "Menu Fragment created!")
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
@@ -43,12 +50,9 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         constraintLayout = binding.menuConstraintLayout
-        val localFile = File.createTempFile("tempImage", "")
-        DatabaseImpl.getProfilePicture(localFile).addOnSuccessListener {
-            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-            binding.userImage.setImageBitmap(bitmap)
-        }
+        profileImage = view.findViewById(R.id.user_image)
 
+        /*
         if (DatabaseImpl.getCurrentUserId().isNotEmpty()) {
             DatabaseImpl.getUsersReference().child(DatabaseImpl.getCurrentUserId()).addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -62,6 +66,26 @@ class MenuFragment : Fragment() {
                     ).show()
                 }
             })
+        }
+         */
+        val localFile = File.createTempFile("tempImage", "")
+        CoroutineScope(Job()).launch(Dispatchers.Main) {
+            var username = "null"
+            val currentUser = RetrofitClient.instance.currentUser()
+            if (currentUser.uid!!.isNotEmpty()) {
+                withContext(Dispatchers.IO) {
+                    username = RetrofitClient.instance.getUser(currentUser.uid).username!!
+                    DatabaseImpl.getProfilePicture(localFile, currentUser.uid)
+                        .addOnSuccessListener {
+                            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                            profileImage.setImageBitmap(bitmap)
+                        }
+                        .addOnFailureListener {
+                            Log.d("Menu Fragment", "no profile image")
+                        }
+                }
+            }
+            view.findViewById<TextView>(R.id.username_text_view).text = username
         }
 
         rankButton = view.findViewById(R.id.ranking_list_button)

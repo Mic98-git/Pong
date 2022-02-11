@@ -62,8 +62,8 @@ object DatabaseImpl : Database {
         return getDatabaseInstance().getReference("Users")
     }
 
-    override fun getProfilePicture(localFile: File) : FileDownloadTask {
-        return getReferenceToUsersProfilePictures().child(getCurrentUserId()).getFile(localFile)
+    override fun getProfilePicture(localFile: File, uid: String) : FileDownloadTask {
+        return getReferenceToUsersProfilePictures().child(uid).getFile(localFile)
     }
 
     override fun uploadProfilePicture(imageUri : Uri) {

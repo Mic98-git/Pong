@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "502933370178-u6ejrl30edd4uftpq0qprkfn9768bnri.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ponggame",
+            "certificate_hash": "20828bd319ee6714144b28bd8e69213dcbc01e65"
+          }
+        },
+        {
           "client_id": "502933370178-rhnf5ms09rn1icf3j0kfp82sj6qv8t5q.apps.googleusercontent.com",
           "client_type": 3
         }

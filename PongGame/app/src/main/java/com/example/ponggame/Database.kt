@@ -39,7 +39,7 @@ interface Database {
 
     fun uploadProfilePicture(imageUri: Uri)
 
-    fun getProfilePicture(localFile : File): FileDownloadTask
+    fun getProfilePicture(localFile : File, uid: String): FileDownloadTask
 
     fun updateUserScore(update : Int)
 

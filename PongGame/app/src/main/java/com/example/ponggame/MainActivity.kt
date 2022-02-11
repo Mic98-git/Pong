@@ -16,10 +16,14 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.ponggame.databinding.ActivityMainBinding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var mediaUri: MediaPlayer
+    lateinit var googleSignInClient: GoogleSignInClient
 
     private var isPlaying: Boolean = false
 
@@ -45,6 +49,15 @@ class MainActivity : AppCompatActivity() {
 
         mediaUri = MediaPlayer.create(this, R.raw.main_theme)
         mediaUri.isLooping
+
+        /* Configure Google Sign In
+        val gso = GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("502933370178-rhnf5ms09rn1icf3j0kfp82sj6qv8t5q.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso)*/
     }
 
     override fun onRestart() {
